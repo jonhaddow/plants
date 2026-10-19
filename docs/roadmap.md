@@ -9,6 +9,7 @@
 ## Next
 
 - Batch species ID: photos to Claude Code, which fills in species, notes and better starting intervals
+- Health notes: dated observations in a plant's history ("crispy top, cut back"), separate from its general care notes, so they age out instead of going stale
 - Rooms page: rename, reorder (the walking route), delete empty ones
 - Holiday mode: a page for a plant-sitter, signed in by link
 - Winter: stretch intervals in the darker months

@@ -9,3 +9,4 @@
 - **Its own look**: Nunito, sage and cream, leaf green for actions and a water blue for Watered. Budget's floating tab bar.
 - **Follows the device's light or dark setting**; no theme setting.
 - **Rooms are made while adding plants**; no rooms page yet (see roadmap).
+- **Notes are general care for the species** (October 2026), not how the plant looks today: observations go stale. The first batch ID (4 plants) wrote name, species, notes and a starting interval straight to the live database.
