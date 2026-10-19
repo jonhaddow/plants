@@ -1,9 +1,13 @@
 import { error, redirect } from '@sveltejs/kit';
 import type { Handle } from '@sveltejs/kit/hooks';
+import { dev } from '$app/env';
 import { env } from 'cloudflare:workers';
 import { drizzle } from 'drizzle-orm/d1';
 import * as schema from '#lib/server/db/schema.ts';
 import { SESSION_COOKIE, setSessionCookie, validateSession } from '#lib/server/auth.ts';
+
+// The dev server runs on Node, which lacks some of Workers' built-ins.
+if (dev) await import('./node-shims.ts');
 
 /** Pages anyone can reach without signing in. */
 const PUBLIC = [
