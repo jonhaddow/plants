@@ -13,6 +13,19 @@ export default defineConfig(
 	{ ignores: ['worker-configuration.d.ts'] },
 	js.configs.recommended,
 	ts.configs.recommended,
+	// Type-aware promise rules for app code: they catch a missing await. The full
+	// recommendedTypeChecked preset was tried and only added noise here.
+	{
+		files: ['src/**/*.ts', 'src/**/*.svelte'],
+		languageOptions: {
+			parserOptions: { projectService: true, tsconfigRootDir: import.meta.dirname }
+		},
+		rules: {
+			'@typescript-eslint/await-thenable': 'error',
+			'@typescript-eslint/no-floating-promises': 'error',
+			'@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }]
+		}
+	},
 	svelte.configs.recommended,
 	prettier,
 	svelte.configs.prettier,
@@ -28,7 +41,6 @@ export default defineConfig(
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
 			parserOptions: {
-				projectService: true,
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser
 			}
