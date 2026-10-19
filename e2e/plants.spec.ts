@@ -37,8 +37,9 @@ test('adds plants one photo after another, with a new room', async ({ page }) =>
 	await page.getByRole('button', { name: 'Undo' }).click();
 	await expect(page.getByText('2 added')).toBeVisible();
 
+	// New plants wait in their own list for Claude to set them up.
 	await open(page, '/plants');
-	await expect(page.getByRole('heading', { name: 'Hall' })).toBeVisible();
+	await expect(page.getByRole('heading', { name: 'To set up' })).toBeVisible();
 	await expect(page.getByRole('link', { name: /Hall plant 3/ })).toBeHidden();
 	const first = page.getByRole('link', { name: /Hall plant 1/ });
 	await expect(first).toContainText('Every 2 weeks');

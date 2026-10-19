@@ -14,6 +14,7 @@ Which house plants need water today, for a two-person household. A PWA at https:
 - `src/lib/dates.ts`: UK days
 - `PlantTile.svelte`: a plant on Today's grid; `/plants/new` is the camera page
 - Routes: `/` Today, `/plants` (+ `/plants/new`, `/plants/[id]`, `/plants/[id]/edit`), `/settings`, `/notifications`
+- `.claude/skills/classify-plants`: naming new plants (the To set up list) from their photos, with species, interval and care note
 - Schema: `src/lib/server/db/schema.ts`. Product choices: `docs/decisions.md`; what's next: `docs/roadmap.md`.
 
 ## Commands

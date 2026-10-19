@@ -3,6 +3,19 @@
 	import { describeInterval } from '#lib/watering.ts';
 
 	let { data } = $props();
+	const sections = $derived([
+		...(data.toSetUp.length
+			? [
+					{
+						id: 0,
+						name: 'To set up',
+						note: 'Claude names these and sets their care from the photo, next time it’s asked to.',
+						plants: data.toSetUp
+					}
+				]
+			: []),
+		...data.rooms.map((r) => ({ ...r, note: null }))
+	]);
 </script>
 
 <svelte:head>
@@ -15,13 +28,14 @@
 		<a class="btn primary" href="/plants/new">Add plant</a>
 	</header>
 
-	{#if !data.rooms.length}
+	{#if !sections.length}
 		<p class="muted">No plants yet.</p>
 	{/if}
 
-	{#each data.rooms as r (r.id)}
+	{#each sections as r (r.id)}
 		<section>
 			<h2>{r.name}</h2>
+			{#if r.note}<p class="muted">{r.note}</p>{/if}
 			<ul class="grid">
 				{#each r.plants as p (p.id)}
 					<li>
@@ -70,6 +84,9 @@
 		width: 100% !important;
 		height: auto !important;
 		aspect-ratio: 1;
+	}
+	section p {
+		margin: 0;
 	}
 	small {
 		font-size: 13px;
