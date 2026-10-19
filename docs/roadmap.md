@@ -13,3 +13,7 @@
 - Holiday mode: a page for a plant-sitter, signed in by link
 - Winter: stretch intervals in the darker months
 - QR / NFC tags on pots that open the plant's page
+
+## Experiments
+
+- Workflow mockups in Settings (`static/experiments/mockups.html`); delete once a flow is chosen and record the choice in `decisions.md`

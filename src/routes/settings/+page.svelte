@@ -13,7 +13,19 @@
 		<li><a href="/notifications">Notifications <span class="muted">›</span></a></li>
 	</ul>
 
-	<section class="people">
+	<section class="group">
+		<h2>Experiments</h2>
+		<ul class="list">
+			<li>
+				<a href="/experiments/mockups.html" data-sveltekit-reload
+					>Workflow mockups <span class="muted">›</span></a
+				>
+			</li>
+		</ul>
+		<p class="muted">Other ways the app could work, with made-up plants. Nothing is saved.</p>
+	</section>
+
+	<section class="group people">
 		<h2>Who can sign in</h2>
 		<ul class="list">
 			{#each data.people as u (u.email)}
@@ -50,7 +62,7 @@
 	.list li a {
 		padding: 14px 16px;
 	}
-	.people {
+	.group {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
@@ -58,6 +70,10 @@
 	.people .muted {
 		overflow: hidden;
 		text-overflow: ellipsis;
+	}
+	.group > p {
+		margin: 0;
+		font-size: 14px;
 	}
 	form .btn {
 		width: 100%;
