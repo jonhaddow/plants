@@ -13,3 +13,12 @@
 - Holiday mode: a page for a plant-sitter, signed in by link
 - Winter: stretch intervals in the darker months
 - QR / NFC tags on pots that open the plant's page
+
+## Experiments
+
+Clickable mockups in Settings (`static/experiments/mockups.html`, made-up plants, nothing saved) to try before building:
+
+- Walk round: one plant at a time, room by room, swipe or big buttons
+- Water all, then exceptions: one tap per room, flip the damp ones, save
+- Photo grid: tap a tile for Watered, corner button for Still damp
+- Camera-first adding: the camera stays open, each snap saves to the picked room
