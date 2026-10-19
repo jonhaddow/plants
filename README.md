@@ -4,6 +4,10 @@ Which house plants need water today. One photo and a room per plant; each plant'
 
 Stack: SvelteKit 3 (Svelte 5) on Cloudflare Workers, Drizzle ORM on Cloudflare D1 (SQLite, EU; photos too), Vitest and Playwright. Set up like the budget app.
 
+## Installing on a phone
+
+Open https://plants.app.haddow.me in Safari (iPhone) or Chrome (Android), sign in, then Share → Add to Home Screen. Open it from the home screen and turn on Settings → Notifications for the morning reminder.
+
 ## Running locally
 
 ```sh
