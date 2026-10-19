@@ -6,7 +6,12 @@ test('shows what needs water as photo tiles, filtered by room', async ({ page })
 	await expect(page.getByText('3 plants need water')).toBeVisible();
 	await expect(page.getByText('2d late')).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Coming up' })).toBeVisible();
-	await expect(page.getByRole('link', { name: /Cactus/ })).toContainText('In 3 days');
+	// Coming up is a row per day; open one to see its plants.
+	await expect(page.getByRole('link', { name: /Cactus/ })).toBeHidden();
+	const day = page.locator('summary', { hasText: '1 plant' });
+	await expect(day).toContainText(/[A-Z][a-z]{2} \d{1,2} [A-Z][a-z]{2}/);
+	await day.click();
+	await expect(page.getByRole('link', { name: /Cactus/ })).toBeVisible();
 
 	await page.getByRole('button', { name: 'Kitchen', exact: true }).click();
 	await expect(page.getByRole('button', { name: 'Watered Basil' })).toBeVisible();

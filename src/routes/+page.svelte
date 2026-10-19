@@ -3,7 +3,7 @@
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import PlantTile from '#lib/components/PlantTile.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
-	import { relativeDay } from '#lib/dates.ts';
+	import { daysBetween, formatDay } from '#lib/dates.ts';
 
 	let { data, form }: PageProps = $props();
 
@@ -13,6 +13,20 @@
 	const shown = $derived(
 		roomId === null ? data.plants : data.plants.filter((p) => p.roomId === roomId)
 	);
+	// Coming up, a row per day (already soonest first); tap one to see its plants.
+	const days = $derived.by(() => {
+		const byDay: { day: string; label: string; plants: typeof data.upcoming }[] = [];
+		for (const p of data.upcoming) {
+			if (byDay.at(-1)?.day !== p.dueOn)
+				byDay.push({
+					day: p.dueOn,
+					label: daysBetween(data.today, p.dueOn) === 1 ? 'Tomorrow' : formatDay(p.dueOn),
+					plants: []
+				});
+			byDay.at(-1)!.plants.push(p);
+		}
+		return byDay;
+	});
 </script>
 
 <svelte:head>
@@ -77,23 +91,34 @@
 		{/if}
 	{/if}
 
-	{#if data.upcoming.length}
+	{#if days.length}
 		<section class="room">
 			<h2>Coming up</h2>
-			<ul class="list">
-				{#each data.upcoming as p (p.id)}
-					<li>
-						<a class="who soon" href="/plants/{p.id}">
-							<PlantPhoto photoKey={p.photoKey} size={40} />
-							<span>
-								<strong>{p.name}</strong>
-								<small>{p.room}</small>
-							</span>
-							<small class="when">{relativeDay(p.dueOn, data.today)}</small>
-						</a>
-					</li>
-				{/each}
-			</ul>
+			{#each days as d (d.day)}
+				<details class="day">
+					<summary>
+						<span>
+							<strong>{d.label}</strong>
+							<small>{d.plants.length} {d.plants.length === 1 ? 'plant' : 'plants'}</small>
+						</span>
+						<span class="peek" aria-hidden="true">
+							{#each d.plants.slice(0, 4) as p (p.id)}
+								<PlantPhoto photoKey={p.photoKey} size={32} />
+							{/each}
+						</span>
+					</summary>
+					<ul class="soon">
+						{#each d.plants as p (p.id)}
+							<li>
+								<a href="/plants/{p.id}">
+									<PlantPhoto photoKey={p.photoKey} size={96} />
+									<small>{p.name}</small>
+								</a>
+							</li>
+						{/each}
+					</ul>
+				</details>
+			{/each}
 		</section>
 	{/if}
 </main>
@@ -147,29 +172,66 @@
 		flex-direction: column;
 		gap: 10px;
 	}
-	.who {
+	.day {
+		background: var(--card);
+		border-radius: var(--radius);
+		box-shadow: var(--shadow);
+	}
+	summary {
 		display: flex;
 		align-items: center;
+		justify-content: space-between;
 		gap: 12px;
-		text-decoration: none;
+		padding: 10px 12px;
+		min-height: 44px;
+		cursor: pointer;
+		list-style: none;
 	}
-	.who > span {
+	summary::-webkit-details-marker {
+		display: none;
+	}
+	summary > span:first-child {
 		display: flex;
 		flex-direction: column;
-		min-width: 0;
-		flex: 1;
 	}
-	.who strong {
+	summary strong {
 		font-size: 17px;
 	}
-	.who small {
+	summary small {
 		color: var(--muted);
 		font-size: 14px;
 	}
-	.soon {
-		padding: 10px 12px;
+	.peek {
+		display: flex;
 	}
-	.when {
-		white-space: nowrap;
+	.peek :global(img),
+	.peek :global(.none) {
+		border-radius: 50%;
+		border: 2px solid var(--card);
+		margin-left: -10px;
+	}
+	.soon {
+		list-style: none;
+		margin: 0;
+		padding: 0 12px 12px;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+		gap: 10px;
+	}
+	.soon a {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		text-decoration: none;
+	}
+	.soon :global(img),
+	.soon :global(.none) {
+		width: 100% !important;
+		height: auto !important;
+		aspect-ratio: 1;
+	}
+	.soon small {
+		font-size: 13px;
+		line-height: 1.2;
 	}
 </style>
