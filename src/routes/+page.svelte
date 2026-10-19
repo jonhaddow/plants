@@ -14,13 +14,19 @@
 		roomId === null ? data.plants : data.plants.filter((p) => p.roomId === roomId)
 	);
 	// Coming up, a row per day (already soonest first); tap one to see its plants.
-	const days = $derived(
-		Object.entries(Object.groupBy(data.upcoming, (p) => p.dueOn)).map(([day, plants]) => ({
-			day,
-			label: daysBetween(data.today, day) === 1 ? 'Tomorrow' : formatDay(day),
-			plants: plants!
-		}))
-	);
+	const days = $derived.by(() => {
+		const byDay: { day: string; label: string; plants: typeof data.upcoming }[] = [];
+		for (const p of data.upcoming) {
+			if (byDay.at(-1)?.day !== p.dueOn)
+				byDay.push({
+					day: p.dueOn,
+					label: daysBetween(data.today, p.dueOn) === 1 ? 'Tomorrow' : formatDay(p.dueOn),
+					plants: []
+				});
+			byDay.at(-1)!.plants.push(p);
+		}
+		return byDay;
+	});
 </script>
 
 <svelte:head>
