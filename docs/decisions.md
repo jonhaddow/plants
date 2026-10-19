@@ -10,3 +10,4 @@
 - **Follows the device's light or dark setting**; no theme setting.
 - **Rooms are made while adding plants**; no rooms page yet (see roadmap).
 - **Experiments are public static files** (October 2026): clickable mockups in `static/experiments`, linked from Settings, with made-up plants. Static assets skip the sign-in check, which is fine with no real data in them.
+- **Photo grid for Today, camera-first for adding** (October 2026), picked from the workflow mockups. Today becomes big photo tiles: plants are known by sight, not name, so tap a tile for Watered and a small corner button for Still damp. Adding keeps the camera open and saves on each snap, with the room under the shutter, to make walking round the house even quicker. Turned down: walk round (one plant at a time, swipe; slow with many plants) and water all then exceptions (a Save step, and easy to water a whole room by mistake).

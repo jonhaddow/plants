@@ -8,6 +8,8 @@
 
 ## Next
 
+- Today as a photo grid (mockup C): big photo tiles, tap for Watered, a corner button for Still damp, filter by room; Undo stays
+- Camera-first adding (mockup D): the camera stays open, each snap saves a plant to the picked room; name and how often behind Details
 - Batch species ID: photos to Claude Code, which fills in species, notes and better starting intervals
 - Rooms page: rename, reorder (the walking route), delete empty ones
 - Holiday mode: a page for a plant-sitter, signed in by link
@@ -16,4 +18,4 @@
 
 ## Experiments
 
-- Workflow mockups in Settings (`static/experiments/mockups.html`); delete once a flow is chosen and record the choice in `decisions.md`
+- Workflow mockups in Settings (`static/experiments/mockups.html`): C and D chosen; delete the page and the Settings link once they're built
