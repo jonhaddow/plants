@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Downloads the photos of plants waiting to be set up (or the plant ids given)
 into a folder, with numbered contact sheets of six to look at.
-Usage: fetch.py [out dir] [id ...]   (run from the repo, needs op-claude)"""
+Usage: fetch.py [out dir] [id ...]   (run from the repo; needs op-claude and Pillow)"""
 import base64, json, os, subprocess, sys
 from PIL import Image, ImageDraw
 
@@ -16,11 +16,11 @@ def d1(sql):
     return json.loads(res.stdout)[0]['results']
 
 where = f"p.id IN ({','.join(map(str, ids))})" if ids else 'p.needs_setup'
-plants = d1(f"""SELECT p.id, r.name AS room, p.name, p.species, p.notes, p.photo_key, p.interval_days, p.last_watered_on
+plants = d1(f"""SELECT p.id, r.name AS room, p.name, p.species, p.notes, p.photo_key, p.interval_days,
+                       (SELECT count(*) FROM "check" c WHERE c.plant_id = p.id) AS checks
                 FROM plant p JOIN room r ON r.id = p.room_id WHERE {where} ORDER BY p.id""")
-json.dump(plants, open(f'{out}/plants.json', 'w'), indent=1)
 for p in plants:
-    print(p['id'], p['room'], '|', p['name'], '|', p['species'], '|', 'photo' if p['photo_key'] else 'NO PHOTO')
+    print(p['id'], p['room'], '|', p['name'], '|', p['species'], '|', p['notes'], '|', f"{p['interval_days']}d, {p['checks']} checks", '|', 'photo' if p['photo_key'] else 'NO PHOTO')
 
 # A few at a time: each photo is about 270 KB of base64.
 with_photo = [p['id'] for p in plants if p['photo_key']]
