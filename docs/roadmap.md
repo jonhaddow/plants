@@ -16,9 +16,4 @@
 
 ## Experiments
 
-Clickable mockups in Settings (`static/experiments/mockups.html`, made-up plants, nothing saved) to try before building:
-
-- Walk round: one plant at a time, room by room, swipe or big buttons
-- Water all, then exceptions: one tap per room, flip the damp ones, save
-- Photo grid: tap a tile for Watered, corner button for Still damp
-- Camera-first adding: the camera stays open, each snap saves to the picked room
+- Workflow mockups in Settings (`static/experiments/mockups.html`); delete once a flow is chosen and record the choice in `decisions.md`

@@ -9,3 +9,4 @@
 - **Its own look**: Nunito, sage and cream, leaf green for actions and a water blue for Watered. Budget's floating tab bar.
 - **Follows the device's light or dark setting**; no theme setting.
 - **Rooms are made while adding plants**; no rooms page yet (see roadmap).
+- **Experiments are public static files** (October 2026): clickable mockups in `static/experiments`, linked from Settings, with made-up plants. Static assets skip the sign-in check, which is fine with no real data in them.

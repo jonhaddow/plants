@@ -349,18 +349,18 @@ const C = {
 
 /* ---------- D: quick add ---------- */
 const D = {
-	added: [], room: 'Living room', every: 'Weekly', next: 0,
+	added: [], extra: [], room: 'Living room', every: 'Weekly', next: 0,
 	camera: ['🪴', '🌵', '🌿', '🌱', '🍃', '🌷', '🌳'],
 	reset() { this.added = []; this.render(); },
 	render() {
 		$('d-count').textContent = this.added.length ? `${this.added.length} added · ${this.room}` : 'Point at a plant';
-		$('d-rooms').innerHTML = [...ROOMS, 'Bathroom', 'Hall', '+ New room'].map((r) => `<button class="chip ${r === this.room ? 'on' : ''}" onclick="D.pick('${r}')">${r}</button>`).join('');
+		$('d-rooms').innerHTML = [...ROOMS, ...this.extra, 'Bathroom', 'Hall', '+ New room'].map((r) => `<button class="chip ${r === this.room ? 'on' : ''}" onclick="D.pick('${r}')">${r}</button>`).join('');
 		$('d-every').innerHTML = ['Every few days', 'Weekly', 'Fortnightly', 'Monthly'].map((r) => `<button class="chip ${r === this.every ? 'on' : ''}" onclick="D.every='${r}';D.render()">${r}</button>`).join('');
 		$('d-thumbs').innerHTML = this.added.slice(-3).map((a) => `<i style="background:#ffffff1a">${a.e}</i>`).join('');
 		$('d-live').textContent = this.camera[this.next % this.camera.length];
 	},
 	pick(r) {
-		if (r === '+ New room') { const n = prompt('Room name'); if (!n) return; ROOMS.push(n); r = n; }
+		if (r === '+ New room') { const n = prompt('Room name'); if (!n) return; this.extra.push(n); r = n; }
 		this.room = r; this.render();
 	},
 	snap() {
