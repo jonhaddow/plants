@@ -1,0 +1,40 @@
+{
+	"$schema": "./node_modules/wrangler/config-schema.json",
+	"name": "plants",
+	"compatibility_date": "2026-10-03",
+	"compatibility_flags": ["nodejs_als"],
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	// Only served on plants.app.haddow.me (Google sign-in only allows that address).
+	"workers_dev": false,
+	"routes": [{ "pattern": "plants.app.haddow.me", "custom_domain": true }],
+	// Keeps request logs and console output (Workers Logs, free tier) for debugging.
+	"observability": {
+		"enabled": true
+	},
+	"triggers": {
+		// The morning reminder (worker/entry.js): 8:07 in summer, 7:07 in winter.
+		"crons": ["7 7 * * *"]
+	},
+	"vars": {
+		"APP_ORIGIN": "https://plants.app.haddow.me",
+		// Public OAuth client ID; the secret is a Worker secret (GOOGLE_CLIENT_SECRET).
+		"GOOGLE_CLIENT_ID": "856408914710-dgcs4pkdkahr6jchr0pefodiobhjrmv4.apps.googleusercontent.com",
+		// Web push public key (the private key is the VAPID_PRIVATE_KEY secret).
+		"VAPID_PUBLIC_KEY": "BEkpz8773j6CLF1tE5gGK_48vLgIQYQ_BvFAZ1B6lFzfGpq4dV3JK0tZWEf_n9MNMStHTbRc1RUi80ZWtqksYsI"
+	},
+	// Off: branch previews would share the live D1 database.
+	"preview_urls": false,
+	"d1_databases": [
+		{
+			// Created with --jurisdiction eu, so the data stays in the EU.
+			"binding": "DB",
+			"database_name": "plants",
+			"database_id": "d3590e00-ff25-4def-90ed-f748eefd4731",
+			"migrations_dir": "drizzle"
+		}
+	]
+}
