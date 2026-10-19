@@ -1,9 +1,10 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import { enhance } from '$app/forms';
 	import PhotoInput from '#lib/components/PhotoInput.svelte';
 	import RoomPicker from '#lib/components/RoomPicker.svelte';
 
-	let { data, form } = $props();
+	let { data, form }: PageProps = $props();
 	const p = $derived(data.plant);
 	let saving = $state(false);
 </script>

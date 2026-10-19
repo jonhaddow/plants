@@ -186,6 +186,9 @@ export async function deletePlant(db: DB, id: number) {
 	return gone?.photoKey ?? null;
 }
 
+/** What a check saves so undo can put it back. */
+type Schedule = Pick<Plant, 'intervalDays' | 'dueOn' | 'lastWateredOn'>;
+
 /**
  * Records watering a plant or finding it still damp, and moves its schedule
  * on. Returns the check's id (for undo), or null if there's no such plant.
@@ -200,7 +203,11 @@ export async function recordCheck(
 ) {
 	const p = await getPlant(db, plantId);
 	if (!p) return null;
-	const before = { intervalDays: p.intervalDays, dueOn: p.dueOn, lastWateredOn: p.lastWateredOn };
+	const before: Schedule = {
+		intervalDays: p.intervalDays,
+		dueOn: p.dueOn,
+		lastWateredOn: p.lastWateredOn
+	};
 	const after = kind === 'watered' ? afterWatering(before, today) : afterDamp(before, today);
 	const [, [made]] = await db.batch([
 		db.update(plant).set(after).where(eq(plant.id, plantId)),
@@ -224,7 +231,10 @@ export async function undoCheck(db: DB, checkId: number) {
 	const [c] = await db.select().from(check).where(eq(check.id, checkId));
 	if (!c) return null;
 	await db.batch([
-		db.update(plant).set(JSON.parse(c.before)).where(eq(plant.id, c.plantId)),
+		db
+			.update(plant)
+			.set(JSON.parse(c.before) as Schedule)
+			.where(eq(plant.id, c.plantId)),
 		db.delete(check).where(eq(check.id, checkId))
 	]);
 	return c.plantId;

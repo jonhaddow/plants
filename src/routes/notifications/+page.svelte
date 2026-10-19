@@ -1,7 +1,8 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
 
-	let { data } = $props();
+	let { data }: PageProps = $props();
 
 	type State = 'loading' | 'unsupported' | 'install-first' | 'blocked' | 'off' | 'on';
 	let status = $state<State>('loading');

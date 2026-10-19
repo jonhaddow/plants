@@ -13,8 +13,9 @@ export default defineConfig(
 	{ ignores: ['worker-configuration.d.ts'] },
 	js.configs.recommended,
 	ts.configs.recommended,
-	// Type-aware promise rules for app code: they catch a missing await. The full
-	// recommendedTypeChecked preset was tried and only added noise here.
+	// Type-aware rules for app code: a missing await, and untyped (any) values
+	// leaking in. Routes type their props (PageProps) so ESLint can see them. The
+	// full recommendedTypeChecked preset was tried and only added noise here.
 	{
 		files: ['src/**/*.ts', 'src/**/*.svelte'],
 		languageOptions: {
@@ -23,7 +24,12 @@ export default defineConfig(
 		rules: {
 			'@typescript-eslint/await-thenable': 'error',
 			'@typescript-eslint/no-floating-promises': 'error',
-			'@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }]
+			'@typescript-eslint/no-misused-promises': ['error', { checksVoidReturn: false }],
+			'@typescript-eslint/no-unsafe-argument': 'error',
+			'@typescript-eslint/no-unsafe-assignment': 'error',
+			'@typescript-eslint/no-unsafe-call': 'error',
+			'@typescript-eslint/no-unsafe-member-access': 'error',
+			'@typescript-eslint/no-unsafe-return': 'error'
 		}
 	},
 	svelte.configs.recommended,

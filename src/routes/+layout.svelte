@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { LayoutProps } from './$types';
 	import { browser } from '$app/env';
 	import { beforeNavigate } from '$app/navigation';
 	import { page, updated } from '$app/state';
@@ -7,7 +8,7 @@
 	import font from '@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2?url';
 	import './app.css';
 
-	let { data, children } = $props();
+	let { data, children }: LayoutProps = $props();
 
 	const path = $derived(page.url.pathname);
 	const tabs = $derived([
