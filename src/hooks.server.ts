@@ -23,7 +23,7 @@ const SECURITY_HEADERS = {
 	'X-Frame-Options': 'DENY',
 	'X-Content-Type-Options': 'nosniff',
 	'Referrer-Policy': 'same-origin',
-	'Permissions-Policy': 'camera=(), microphone=(), geolocation=()'
+	'Permissions-Policy': 'camera=(self), microphone=(), geolocation=()'
 };
 
 export const handle: Handle = async ({ event, resolve }) => {

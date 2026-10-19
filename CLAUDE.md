@@ -8,10 +8,11 @@ Which house plants need water today, for a two-person household. A PWA at https:
 - `src/lib/server/plants.ts`: rooms, plants, due and upcoming lists, recording checks and undo, history
 - `src/lib/server/check-actions.ts`: the water / damp / undo form actions shared by Today and a plant's page
 - `src/lib/server/plant-form.ts`: reading the add and edit forms (room picked or new, default names)
-- `src/lib/server/photos.ts`, `src/routes/photos/[key]`: photos as base64 in D1's `photo` table, served to signed-in people only. `PhotoInput.svelte` shrinks them on the phone before upload.
+- `src/lib/server/photos.ts`, `src/routes/photos/[key]`: photos as base64 in D1's `photo` table, served to signed-in people only. `src/lib/photo.ts` shrinks them on the phone before upload.
 - `src/lib/server/reminders.ts`, `src/routes/remind`: the morning push, called by the cron (`worker/entry.js`) with `CRON_SECRET`
 - `src/lib/server/push.ts`, `src/service-worker/`: web push and the app icon badge (from budget)
 - `src/lib/dates.ts`: UK days
+- `PlantTile.svelte`: a plant on Today's grid; `/plants/new` is the camera page
 - Routes: `/` Today, `/plants` (+ `/plants/new`, `/plants/[id]`, `/plants/[id]/edit`), `/settings`, `/notifications`
 - Schema: `src/lib/server/db/schema.ts`. Product choices: `docs/decisions.md`; what's next: `docs/roadmap.md`.
 

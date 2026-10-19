@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { shrinkFile } from '#lib/photo.ts';
+
 	// A big "Take a photo" button. The phone offers its camera or photo
-	// library; the photo is shrunk here before upload, so sending one is quick
-	// and the bucket stays small.
+	// library; the photo is shrunk here before upload.
 	let { current = null }: { current?: string | null } = $props();
 
-	const MAX_SIDE = 1200;
 	let preview = $state<string | null>(null);
 
 	async function shrink(event: Event) {
@@ -13,21 +13,11 @@
 		if (!file) return;
 		if (preview) URL.revokeObjectURL(preview);
 		preview = URL.createObjectURL(file);
-		try {
-			const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
-			const scale = Math.min(1, MAX_SIDE / Math.max(bitmap.width, bitmap.height));
-			const canvas = document.createElement('canvas');
-			canvas.width = Math.round(bitmap.width * scale);
-			canvas.height = Math.round(bitmap.height * scale);
-			canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
-			const blob = await new Promise<Blob | null>((r) => canvas.toBlob(r, 'image/jpeg', 0.82));
-			if (!blob) return;
-			const files = new DataTransfer();
-			files.items.add(new File([blob], 'plant.jpg', { type: 'image/jpeg' }));
-			input.files = files.files;
-		} catch {
-			// Not every browser can do this; the original is sent instead.
-		}
+		const small = await shrinkFile(file);
+		if (small === file) return;
+		const files = new DataTransfer();
+		files.items.add(new File([small], 'plant.jpg', { type: 'image/jpeg' }));
+		input.files = files.files;
 	}
 
 	const shown = $derived(preview ?? (current ? `/photos/${current}` : null));

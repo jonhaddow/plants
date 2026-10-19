@@ -1,18 +1,17 @@
 <script lang="ts">
-	import CheckButtons from '#lib/components/CheckButtons.svelte';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
+	import PlantTile from '#lib/components/PlantTile.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
-	import { daysBetween, relativeDay } from '#lib/dates.ts';
+	import { relativeDay } from '#lib/dates.ts';
 
 	let { data, form } = $props();
 
-	const dueCount = $derived(data.due.reduce((n, r) => n + r.plants.length, 0));
-
-	function lateness(dueOn: string) {
-		const late = daysBetween(dueOn, data.today);
-		if (late === 0) return 'Due today';
-		return late === 1 ? '1 day late' : `${late} days late`;
-	}
+	const dueCount = $derived(data.plants.filter((p) => !p.checked).length);
+	const rooms = $derived([...new Map(data.plants.map((p) => [p.roomId, p.room])).entries()]);
+	let roomId = $state<number | null>(null);
+	const shown = $derived(
+		roomId === null ? data.plants : data.plants.filter((p) => p.roomId === roomId)
+	);
 </script>
 
 <svelte:head>
@@ -24,6 +23,8 @@
 		<h1>Today</h1>
 		{#if dueCount}
 			<p class="muted">{dueCount === 1 ? '1 plant needs' : `${dueCount} plants need`} water</p>
+		{:else if data.plants.length}
+			<p class="muted">All done for today</p>
 		{/if}
 	</header>
 
@@ -38,32 +39,42 @@
 			</p>
 			<a class="btn primary" href="/plants/new">Add the first plant</a>
 		</section>
-	{:else if !dueCount}
+	{:else if !data.plants.length}
 		<section class="card all-done">
 			<span class="leaf" aria-hidden="true">🌿</span>
 			<p><strong>Nothing needs water today.</strong></p>
 		</section>
 	{/if}
 
-	{#each data.due as r (r.id)}
-		<section class="room">
-			<h2>{r.name}</h2>
-			<ul class="list">
-				{#each r.plants as p (p.id)}
-					<li class="due">
-						<a class="who" href="/plants/{p.id}">
-							<PlantPhoto photoKey={p.photoKey} />
-							<span>
-								<strong>{p.name}</strong>
-								<small class:over={p.dueOn < data.today}>{lateness(p.dueOn)}</small>
-							</span>
-						</a>
-						<CheckButtons id={p.id} name={p.name} />
-					</li>
-				{/each}
-			</ul>
-		</section>
-	{/each}
+	{#if rooms.length > 1}
+		<div class="filter" role="group" aria-label="Room">
+			<button
+				class="chip"
+				class:on={roomId === null}
+				aria-pressed={roomId === null}
+				onclick={() => (roomId = null)}>All</button
+			>
+			{#each rooms as [id, name] (id)}
+				<button
+					class="chip"
+					class:on={roomId === id}
+					aria-pressed={roomId === id}
+					onclick={() => (roomId = id)}>{name}</button
+				>
+			{/each}
+		</div>
+	{/if}
+
+	{#if data.plants.length}
+		<div class="grid">
+			{#each shown as p (p.id)}
+				<PlantTile plant={p} today={data.today} />
+			{/each}
+		</div>
+		{#if data.plants.some((p) => p.checked)}
+			<p class="muted hint">Tap a tile again to undo.</p>
+		{/if}
+	{/if}
 
 	{#if data.upcoming.length}
 		<section class="room">
@@ -110,13 +121,27 @@
 	.leaf {
 		font-size: 28px;
 	}
-	.room {
+	.filter {
 		display: flex;
-		flex-direction: column;
-		gap: 10px;
+		gap: 8px;
+		overflow-x: auto;
+		margin: 0 -16px;
+		padding: 0 16px;
+		scrollbar-width: none;
 	}
-	.due {
-		padding: 12px;
+	.filter .chip {
+		flex: none;
+	}
+	.grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 12px;
+	}
+	.hint {
+		text-align: center;
+		font-size: 14px;
+	}
+	.room {
 		display: flex;
 		flex-direction: column;
 		gap: 10px;
@@ -139,10 +164,6 @@
 	.who small {
 		color: var(--muted);
 		font-size: 14px;
-	}
-	.who small.over {
-		color: var(--over);
-		font-weight: 700;
 	}
 	.soon {
 		padding: 10px 12px;

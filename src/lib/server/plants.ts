@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, gt, lte, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, gt, isNotNull, lte, or, sql } from 'drizzle-orm';
 import { check, plant, room, user, type Plant } from './db/schema.ts';
 import type { DB } from './db/index.ts';
 import { addDays } from '../dates.ts';
@@ -30,6 +30,22 @@ export function duePlants(db: DB, today: string): Promise<PlantRow[]> {
 		.innerJoin(room, eq(plant.roomId, room.id))
 		.where(lte(plant.dueOn, today))
 		.orderBy(...byRoom, asc(plant.dueOn), asc(plant.name));
+}
+
+/**
+ * Today's grid: plants due, plus those already watered or found damp today
+ * (with that check, so a tap can undo it). Room by room, then by name, so
+ * tiles stay put when tapped.
+ */
+export function todayPlants(db: DB, today: string) {
+	const latestToday = sql`(SELECT max(id) FROM "check" WHERE plant_id = ${plant.id} AND day = ${today})`;
+	return db
+		.select({ ...listColumns, checkId: check.id, checked: check.kind })
+		.from(plant)
+		.innerJoin(room, eq(plant.roomId, room.id))
+		.leftJoin(check, eq(check.id, latestToday))
+		.where(or(lte(plant.dueOn, today), isNotNull(check.id)))
+		.orderBy(...byRoom, asc(plant.name));
 }
 
 /** Plants due in the next week, soonest first. */
