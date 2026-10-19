@@ -69,10 +69,10 @@ export async function dueCount(db: DB, today?: string) {
 
 export const plantCount = (db: DB) => dueCount(db);
 
-/** Every plant, room by room. */
-export function allPlants(db: DB): Promise<PlantRow[]> {
+/** Every plant, room by room, and whether it's waiting to be set up. */
+export function allPlants(db: DB) {
 	return db
-		.select(listColumns)
+		.select({ ...listColumns, needsSetup: plant.needsSetup })
 		.from(plant)
 		.innerJoin(room, eq(plant.roomId, room.id))
 		.orderBy(...byRoom, asc(plant.name));

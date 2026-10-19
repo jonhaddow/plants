@@ -65,6 +65,8 @@ export const plant = sqliteTable(
 		intervalDays: integer('interval_days').notNull().default(7),
 		dueOn: text('due_on').notNull(),
 		lastWateredOn: text('last_watered_on'),
+		/** New, waiting for Claude to name it and set its care from the photo (see the classify-plants skill). */
+		needsSetup: integer('needs_setup', { mode: 'boolean' }).notNull().default(true),
 		createdAt: text('created_at').notNull()
 	},
 	(t) => [index('plant_room_idx').on(t.roomId), index('plant_due_idx').on(t.dueOn)]

@@ -15,24 +15,38 @@
 		<a class="btn primary" href="/plants/new">Add plant</a>
 	</header>
 
-	{#if !data.rooms.length}
+	{#if !data.rooms.length && !data.toSetUp.length}
 		<p class="muted">No plants yet.</p>
+	{/if}
+
+	{#snippet grid(plants: typeof data.toSetUp)}
+		<ul class="grid">
+			{#each plants as p (p.id)}
+				<li>
+					<a href="/plants/{p.id}">
+						<PlantPhoto photoKey={p.photoKey} size={160} />
+						<strong>{p.name}</strong>
+						<small class="muted">{describeInterval(p.intervalDays)}</small>
+					</a>
+				</li>
+			{/each}
+		</ul>
+	{/snippet}
+
+	{#if data.toSetUp.length}
+		<section>
+			<h2>To set up</h2>
+			<p class="muted">
+				Claude names these and sets their care from the photo, next time it’s asked to.
+			</p>
+			{@render grid(data.toSetUp)}
+		</section>
 	{/if}
 
 	{#each data.rooms as r (r.id)}
 		<section>
 			<h2>{r.name}</h2>
-			<ul class="grid">
-				{#each r.plants as p (p.id)}
-					<li>
-						<a href="/plants/{p.id}">
-							<PlantPhoto photoKey={p.photoKey} size={160} />
-							<strong>{p.name}</strong>
-							<small class="muted">{describeInterval(p.intervalDays)}</small>
-						</a>
-					</li>
-				{/each}
-			</ul>
+			{@render grid(r.plants)}
 		</section>
 	{/each}
 </main>
