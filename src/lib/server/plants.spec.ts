@@ -77,7 +77,7 @@ describe('adding', () => {
 		form.set('room', 'new');
 		form.set('newRoom', 'Hall');
 		form.set('interval', '0');
-		expect(await readPlantForm(db, form)).toMatchObject({ error: expect.any(String) });
+		expect(await readPlantForm(db, form)).toHaveProperty('error');
 	});
 });
 

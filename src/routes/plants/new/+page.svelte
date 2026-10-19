@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import { deserialize } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
 	import { untrack } from 'svelte';
@@ -9,7 +10,7 @@
 	// to the room picked under the shutter. Name and how often sit behind
 	// Details. Without a camera (or permission) the shutter opens the phone's
 	// own camera instead.
-	let { data } = $props();
+	let { data }: PageProps = $props();
 
 	let camera = $state<'starting' | 'on' | 'off'>('starting');
 	let stream = $state.raw<MediaStream | null>(null);

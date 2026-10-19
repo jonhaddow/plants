@@ -1,11 +1,12 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import CheckButtons from '#lib/components/CheckButtons.svelte';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
 	import { relativeDay } from '#lib/dates.ts';
 	import { describeInterval } from '#lib/watering.ts';
 
-	let { data, form } = $props();
+	let { data, form }: PageProps = $props();
 	const p = $derived(data.plant);
 	let deleting = $state(false);
 </script>

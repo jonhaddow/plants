@@ -1,8 +1,9 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import { describeInterval } from '#lib/watering.ts';
 
-	let { data } = $props();
+	let { data }: PageProps = $props();
 </script>
 
 <svelte:head>

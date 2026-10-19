@@ -1,10 +1,11 @@
 <script lang="ts">
+	import type { PageProps } from './$types';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import PlantTile from '#lib/components/PlantTile.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
 	import { relativeDay } from '#lib/dates.ts';
 
-	let { data, form } = $props();
+	let { data, form }: PageProps = $props();
 
 	const dueCount = $derived(data.plants.filter((p) => !p.checked).length);
 	const rooms = $derived([...new Map(data.plants.map((p) => [p.roomId, p.room])).entries()]);
