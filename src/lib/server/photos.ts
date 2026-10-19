@@ -3,7 +3,7 @@ import { photo } from './db/schema.ts';
 import type { DB } from './db/index.ts';
 
 /**
- * Phones shrink photos to about 200 KB before sending (PhotoInput.svelte).
+ * Phones shrink photos to about 200 KB before sending (src/lib/photo.ts).
  * This is the backstop: as base64 it must fit D1's 2 MB a value.
  */
 const MAX_BYTES = 1_400_000;

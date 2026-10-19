@@ -71,17 +71,16 @@
 	}
 
 	async function snap() {
-		if (!video || !ready()) return;
+		if (!video || saving || !ready()) return;
 		shots++;
-		const photo = await toJpeg(video, video.videoWidth, video.videoHeight);
-		if (photo) await save(photo);
+		await save(toJpeg(video, video.videoWidth, video.videoHeight));
 	}
 
 	async function pick(event: Event) {
 		const input = event.currentTarget as HTMLInputElement;
 		const file = input.files?.[0];
 		input.value = '';
-		if (file && ready()) await save(await shrinkFile(file));
+		if (file && ready()) await save(shrinkFile(file));
 	}
 
 	async function post(action: string, body: FormData) {
@@ -93,11 +92,14 @@
 		return deserialize(await res.text());
 	}
 
-	async function save(photo: Blob) {
+	/** Saves a plant with this photo. Saving starts before the photo's ready, so a double tap can't add two. */
+	async function save(shrinking: Promise<Blob | null>) {
 		saving = true;
-		const body = new FormData(form);
-		body.set('photo', photo, 'plant.jpg');
 		try {
+			const photo = await shrinking;
+			if (!photo) return;
+			const body = new FormData(form);
+			body.set('photo', photo, 'plant.jpg');
 			const result = await post('add', body);
 			if (result.type === 'success') {
 				const plant = result.data!.added as { id: number; name: string; roomId: number };
@@ -122,7 +124,7 @@
 		toast = null;
 		const body = new FormData();
 		body.set('id', String(id));
-		await post('remove', body);
+		if ((await post('remove', body)).type !== 'success') return say('That didn’t undo; try again');
 		added--;
 		await invalidateAll();
 	}
