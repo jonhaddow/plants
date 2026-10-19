@@ -10,6 +10,7 @@ import {
 	history,
 	recordCheck,
 	roomNamed,
+	todayPlants,
 	undoCheck,
 	upcomingPlants,
 	updatePlant
@@ -94,6 +95,22 @@ describe('due and upcoming', () => {
 			['Living room', ['Fern']]
 		]);
 		expect((await upcomingPlants(db, today)).map((p) => p.name)).toEqual(['Palm']);
+	});
+
+	it('keeps plants checked today on Today, with the check to undo', async () => {
+		const living = await roomNamed(db, 'Living room');
+		const fern = await plant('Fern', living, 7, false);
+		await plant('Monstera', living, 7, false);
+		await plant('Cactus', living, 30);
+		const checkId = await recordCheck(db, fern, 'watered', alex, today);
+		expect(await todayPlants(db, today)).toMatchObject([
+			{ name: 'Fern', checkId, checked: 'watered' },
+			{ name: 'Monstera', checkId: null, checked: null }
+		]);
+		await undoCheck(db, checkId!);
+		expect((await todayPlants(db, today))[0]).toMatchObject({ name: 'Fern', checkId: null });
+		await recordCheck(db, fern, 'damp', alex, today);
+		expect((await todayPlants(db, '2026-10-20')).map((p) => p.name)).toEqual(['Monstera']);
 	});
 });
 

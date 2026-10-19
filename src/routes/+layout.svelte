@@ -52,7 +52,8 @@
 
 {@render children()}
 
-{#if data.user}
+<!-- Not over the camera, when adding plants. -->
+{#if data.user && path !== '/plants/new'}
 	<!-- Each tab's code loads straight away, so the first tap only waits for data. -->
 	<nav class="tabs" aria-label="Main" data-sveltekit-preload-code="eager">
 		{#each tabs as tab (tab.href)}

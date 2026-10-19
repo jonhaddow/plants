@@ -1,0 +1,205 @@
+<script lang="ts">
+	import { enhance } from '$app/forms';
+	import { daysBetween } from '#lib/dates.ts';
+	import type { Check } from '#lib/watering.ts';
+
+	// A plant on Today's grid. Tap the photo: Watered. The corner button: Still
+	// damp. Once checked it stays, tinted, and a second tap undoes it.
+	let {
+		plant,
+		today
+	}: {
+		plant: {
+			id: number;
+			name: string;
+			room: string;
+			photoKey: string | null;
+			dueOn: string;
+			checkId: number | null;
+			checked: Check | null;
+		};
+		today: string;
+	} = $props();
+
+	let busy = $state(false);
+	const late = $derived(plant.checked ? 0 : daysBetween(plant.dueOn, today));
+</script>
+
+<form
+	method="POST"
+	class="tile"
+	class:busy
+	data-checked={plant.checked}
+	use:enhance={() => {
+		busy = true;
+		return async ({ update }) => {
+			await update({ reset: false });
+			busy = false;
+		};
+	}}
+>
+	{#if plant.photoKey}
+		<img src="/photos/{plant.photoKey}" alt="" loading="lazy" />
+	{:else}
+		<span class="none" aria-hidden="true">
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+				<path
+					d="M12 21v-8M12 13c0-4 2.5-7 7-7 0 4.5-3 7-7 7ZM12 15c0-3-2-5.5-6-5.5 0 3.5 2.5 5.5 6 5.5Z"
+				/>
+			</svg>
+		</span>
+	{/if}
+
+	{#if plant.checked}
+		<input type="hidden" name="checkId" value={plant.checkId} />
+		<button
+			class="main"
+			formaction="?/undo"
+			aria-label="Undo {plant.checked === 'watered'
+				? `watering ${plant.name}`
+				: `${plant.name} still damp`}"
+		></button>
+		<span class="done">
+			{#if plant.checked === 'watered'}
+				<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+					<path d="M12 3.5c3 3.6 6 7 6 10.3a6 6 0 0 1-12 0c0-3.3 3-6.7 6-10.3Z" />
+				</svg>
+				Watered
+			{:else}
+				Still damp
+			{/if}
+		</span>
+	{:else}
+		<input type="hidden" name="id" value={plant.id} />
+		<button class="main" formaction="?/water" aria-label="Watered {plant.name}"></button>
+		{#if late > 0}<span class="late">{late}d late</span>{/if}
+		<button class="damp" formaction="?/damp" aria-label="{plant.name} is still damp">Damp</button>
+	{/if}
+
+	<span class="label">
+		<strong>{plant.name}</strong>
+		<small>{plant.room}</small>
+	</span>
+</form>
+
+<style>
+	.tile {
+		position: relative;
+		aspect-ratio: 3 / 4;
+		border-radius: var(--radius);
+		overflow: hidden;
+		background: var(--line);
+		box-shadow: var(--shadow);
+		user-select: none;
+		-webkit-user-select: none;
+	}
+	img,
+	.none {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+	}
+	.none {
+		display: grid;
+		place-items: center;
+		color: var(--muted);
+	}
+	.none svg {
+		width: 40%;
+	}
+	/* The whole tile is the button; everything else sits on top without catching taps. */
+	.main {
+		position: absolute;
+		inset: 0;
+		border: 0;
+		background: none;
+		cursor: pointer;
+	}
+	.main:focus-visible {
+		outline: 3px solid var(--ink);
+		outline-offset: -3px;
+		border-radius: var(--radius);
+	}
+	.label,
+	.late,
+	.done {
+		pointer-events: none;
+	}
+	.label {
+		position: absolute;
+		inset: auto 0 0;
+		padding: 28px 12px 10px;
+		display: flex;
+		flex-direction: column;
+		background: linear-gradient(transparent, rgb(0 0 0 / 0.6));
+		color: #fff;
+	}
+	.label strong {
+		font-size: 17px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+	.label small {
+		font-size: 13px;
+		opacity: 0.9;
+	}
+	.late {
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		padding: 3px 9px;
+		border-radius: 999px;
+		background: #b8452a;
+		color: #fff;
+		font-size: 12px;
+		font-weight: 800;
+	}
+	.damp {
+		position: absolute;
+		top: 6px;
+		right: 6px;
+		min-height: 36px;
+		padding: 0 12px;
+		border: 0;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.88);
+		color: #18211b;
+		font-size: 13px;
+		font-weight: 800;
+		cursor: pointer;
+	}
+	.done {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		color: #fff;
+		font-size: 18px;
+		font-weight: 900;
+		animation: fade 0.2s ease-out;
+	}
+	.done svg {
+		width: 40px;
+		height: 40px;
+	}
+	[data-checked='watered'] .done {
+		background: rgb(42 111 176 / 0.8);
+	}
+	[data-checked='damp'] .done {
+		background: rgb(150 108 40 / 0.82);
+	}
+	.busy {
+		opacity: 0.6;
+	}
+	@keyframes fade {
+		from {
+			opacity: 0;
+		}
+	}
+</style>
