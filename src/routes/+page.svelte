@@ -15,12 +15,11 @@
 	const shown = $derived(
 		roomId === null ? data.plants : data.plants.filter((p) => p.roomId === roomId)
 	);
-	// Same species, same room, same state today: one tile, unless its ×n was tapped.
-	const split = new SvelteSet<string>();
-	const kind = (p: (typeof data.plants)[number]) => `${p.roomId}|${p.species}`;
+	// Same species, same room, same state today: one tile, unless its ×n was tapped. Once one is marked, the rest stack again.
+	const split = new SvelteSet<number>();
 	const tiles = $derived(
 		stacks(shown, (p) => p.checked ?? '').flatMap((s) =>
-			s.length > 1 && split.has(kind(s[0])) ? s.map((p) => [p]) : [s]
+			s.length > 1 && split.has(s[0].id) ? s.map((p) => [p]) : [s]
 		)
 	);
 	// Coming up, a row per day (already soonest first); tap one to see its plants.
@@ -93,7 +92,7 @@
 	{#if data.plants.length}
 		<div class="grid">
 			{#each tiles as s (s[0].id)}
-				<PlantTile plants={s} today={data.today} onsplit={() => split.add(kind(s[0]))} />
+				<PlantTile plants={s} today={data.today} onsplit={() => split.add(s[0].id)} />
 			{/each}
 		</div>
 		{#if data.plants.some((p) => p.checked)}
