@@ -22,6 +22,10 @@ plants = d1(f"""SELECT p.id, r.name AS room, p.name, p.species, p.notes, p.photo
 for p in plants:
     print(p['id'], p['room'], '|', p['name'], '|', p['species'], '|', p['notes'], '|', f"{p['interval_days']}d, {p['checks']} checks", '|', 'photo' if p['photo_key'] else 'NO PHOTO')
 
+# Species already in use, to reuse: the same species in a room stacks on Today.
+used = d1('SELECT species, count(*) AS n FROM plant WHERE species IS NOT NULL GROUP BY species ORDER BY species')
+print('\nSpecies in use:', ', '.join(f"{s['species']} ({s['n']})" for s in used))
+
 # A few at a time: each photo is about 270 KB of base64.
 with_photo = [p['id'] for p in plants if p['photo_key']]
 for i in range(0, len(with_photo), 10):

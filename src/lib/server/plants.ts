@@ -5,7 +5,10 @@ import { addDays } from '../dates.ts';
 import { afterDamp, afterWatering, type Check } from '../watering.ts';
 
 /** A plant as lists show it. */
-export type PlantRow = Pick<Plant, 'id' | 'name' | 'photoKey' | 'dueOn' | 'intervalDays'> & {
+export type PlantRow = Pick<
+	Plant,
+	'id' | 'name' | 'species' | 'photoKey' | 'dueOn' | 'intervalDays'
+> & {
 	roomId: number;
 	room: string;
 };
@@ -13,6 +16,7 @@ export type PlantRow = Pick<Plant, 'id' | 'name' | 'photoKey' | 'dueOn' | 'inter
 const listColumns = {
 	id: plant.id,
 	name: plant.name,
+	species: plant.species,
 	photoKey: plant.photoKey,
 	dueOn: plant.dueOn,
 	intervalDays: plant.intervalDays,
@@ -76,6 +80,16 @@ export function allPlants(db: DB) {
 		.from(plant)
 		.innerJoin(room, eq(plant.roomId, room.id))
 		.orderBy(...byRoom, asc(plant.name));
+}
+
+/** Species already in use, A to Z, for the edit form to suggest. */
+export async function speciesInUse(db: DB) {
+	const rows = await db
+		.selectDistinct({ species: plant.species })
+		.from(plant)
+		.where(isNotNull(plant.species))
+		.orderBy(asc(plant.species));
+	return rows.map((r) => r.species!);
 }
 
 /** Rows grouped under their room, keeping their order. */

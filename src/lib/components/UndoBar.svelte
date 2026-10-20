@@ -10,7 +10,7 @@
 	<span
 		>{done.kind === 'watered' ? `Watered ${done.name}` : `${done.name}: looking again soon`}</span
 	>
-	<input type="hidden" name="checkId" value={done.checkId} />
+	{#each done.checkIds as id (id)}<input type="hidden" name="checkId" value={id} />{/each}
 	<button>Undo</button>
 </form>
 

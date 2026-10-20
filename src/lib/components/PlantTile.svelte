@@ -1,15 +1,18 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { daysBetween } from '#lib/dates.ts';
+	import { baseName, stackName } from '#lib/stacks.ts';
 	import type { Check } from '#lib/watering.ts';
 
-	// A plant on Today's grid. Tap the photo: Watered. The corner button: Still
-	// damp. Once checked it stays, tinted, and a second tap undoes it.
+	// A plant on Today's grid, or a stack of the same kind watered together. Tap
+	// the photo: Watered. The corner button: Still damp. Once checked it stays,
+	// tinted, and a second tap undoes it. A stack's ×n badge splits it up.
 	let {
-		plant,
-		today
+		plants,
+		today,
+		onsplit
 	}: {
-		plant: {
+		plants: {
 			id: number;
 			name: string;
 			room: string;
@@ -17,12 +20,17 @@
 			dueOn: string;
 			checkId: number | null;
 			checked: Check | null;
-		};
+		}[];
 		today: string;
+		onsplit?: () => void;
 	} = $props();
 
 	let busy = $state(false);
-	const late = $derived(plant.checked ? 0 : daysBetween(plant.dueOn, today));
+	const plant = $derived(plants[0]);
+	const name = $derived(stackName(plants));
+	const late = $derived(
+		plant.checked ? 0 : Math.max(...plants.map((p) => daysBetween(p.dueOn, today)))
+	);
 </script>
 
 <form
@@ -51,13 +59,11 @@
 	{/if}
 
 	{#if plant.checked}
-		<input type="hidden" name="checkId" value={plant.checkId} />
+		{#each plants as p (p.id)}<input type="hidden" name="checkId" value={p.checkId} />{/each}
 		<button
 			class="main"
 			formaction="?/undo"
-			aria-label="Undo {plant.checked === 'watered'
-				? `watering ${plant.name}`
-				: `${plant.name} still damp`}"
+			aria-label="Undo {plant.checked === 'watered' ? `watering ${name}` : `${name} still damp`}"
 		></button>
 		<span class="done">
 			{#if plant.checked === 'watered'}
@@ -70,16 +76,24 @@
 			{/if}
 		</span>
 	{:else}
-		<input type="hidden" name="id" value={plant.id} />
-		<button class="main" formaction="?/water" aria-label="Watered {plant.name}"></button>
+		{#each plants as p (p.id)}<input type="hidden" name="id" value={p.id} />{/each}
+		<button class="main" formaction="?/water" aria-label="Watered {name}"></button>
 		{#if late > 0}<span class="late">{late}d late</span>{/if}
-		<button class="damp" formaction="?/damp" aria-label="{plant.name} is still damp">Damp</button>
+		<button class="damp" formaction="?/damp" aria-label="{name} is still damp">Damp</button>
 	{/if}
 
 	<span class="label">
-		<strong>{plant.name}</strong>
+		<strong>{plants.length > 1 ? baseName(plant.name) : plant.name}</strong>
 		<small>{plant.room}</small>
 	</span>
+	{#if plants.length > 1}
+		<button
+			type="button"
+			class="count"
+			onclick={onsplit}
+			aria-label="Show the {plants.length} separately">×{plants.length}</button
+		>
+	{/if}
 </form>
 
 <style>
@@ -156,6 +170,31 @@
 		color: #fff;
 		font-size: 12px;
 		font-weight: 800;
+	}
+	.count {
+		position: absolute;
+		right: 6px;
+		bottom: 6px;
+		min-width: 44px;
+		min-height: 36px;
+		padding: 0 10px;
+		border: 0;
+		border-radius: 999px;
+		background: rgb(255 255 255 / 0.88);
+		color: #18211b;
+		font-size: 15px;
+		font-weight: 900;
+		cursor: pointer;
+	}
+	/* A stack: a second card peeking out behind. */
+	.tile:has(.count) {
+		box-shadow:
+			var(--shadow),
+			7px 7px 0 -1px var(--card),
+			7px 7px 0 0 rgb(0 0 0 / 0.18);
+	}
+	.tile:has(.count) .label {
+		padding-right: 60px;
 	}
 	.damp {
 		position: absolute;

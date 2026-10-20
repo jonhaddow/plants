@@ -50,7 +50,16 @@
 		</label>
 		<label class="field">
 			<span>What it is <span class="muted">(optional)</span></span>
-			<input name="species" value={p.species ?? ''} placeholder="e.g. Monstera" />
+			<input
+				name="species"
+				value={p.species ?? ''}
+				placeholder="e.g. Monstera"
+				list="species"
+				autocomplete="off"
+			/>
+			<datalist id="species">
+				{#each data.species as s (s)}<option value={s}></option>{/each}
+			</datalist>
 		</label>
 		<label class="field">
 			<span>Notes <span class="muted">(optional)</span></span>

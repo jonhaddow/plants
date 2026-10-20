@@ -11,6 +11,7 @@ Plants added in the app wait on the Plants page under **To set up** (`plant.need
 2. **Look** at every sheet with Read. For a doubtful one, look at its full-size `<id>.jpg`.
 3. **Decide** for each plant:
    - **Sure** of what it is: a common name (`name`) and the botanical one (`species`). Where a room has several of the same, tell them apart by something in the photo, like "Snake plant (yellow edges)" or "Pothos (hanging)"; plain numbers as a last resort.
+   - `species`: reuse one from fetch's "Species in use" list, spelled exactly the same, when it's that kind of plant. Plants with the same species in the same room stack into one tile on Today and are watered together, so leave out cultivars ("Dracaena trifasciata", not "Dracaena trifasciata 'Laurentii'") unless they need watering differently.
    - **Not sure**: `name` is `[unknown]`, `species` stays NULL, and the note opens with the two or three likeliest suggestions, then care that suits them all. Better unknown than a wrong guess.
    - Keep a name Jon typed himself (anything but the default "<Room> plant N"), and any species or notes already there.
    - No photo: `[unknown]`, with "No photo yet: add one and ask again" as the note.

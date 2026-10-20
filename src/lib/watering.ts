@@ -12,7 +12,7 @@ export const CHECKS = ['watered', 'damp'] as const;
 export type Check = (typeof CHECKS)[number];
 
 /** A check just made, for the page to say what happened and offer Undo. */
-export type Done = { checkId: number; kind: Check; name: string };
+export type Done = { checkIds: number[]; kind: Check; name: string };
 
 export const MIN_INTERVAL = 1;
 export const MAX_INTERVAL = 60;

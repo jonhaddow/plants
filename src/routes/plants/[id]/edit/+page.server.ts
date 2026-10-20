@@ -2,13 +2,14 @@ import { error, fail, redirect } from '@sveltejs/kit';
 import { today } from '#lib/dates.ts';
 import { readPlantForm } from '#lib/server/plant-form.ts';
 import { deletePhoto, photoFrom, savePhoto } from '#lib/server/photos.ts';
-import { getPlant, rooms, setPhoto, updatePlant } from '#lib/server/plants.ts';
+import { getPlant, rooms, setPhoto, speciesInUse, updatePlant } from '#lib/server/plants.ts';
 import type { Actions, PageServerLoad } from './$types';
 
 export const load: PageServerLoad = async ({ locals, params }) => {
 	const plant = await getPlant(locals.db, Number(params.id));
 	if (!plant) error(404, 'No such plant');
-	return { plant, rooms: await rooms(locals.db) };
+	const [roomList, species] = await Promise.all([rooms(locals.db), speciesInUse(locals.db)]);
+	return { plant, rooms: roomList, species };
 };
 
 export const actions: Actions = {
