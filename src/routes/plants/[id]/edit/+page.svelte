@@ -7,6 +7,16 @@
 	let { data, form }: PageProps = $props();
 	const p = $derived(data.plant);
 	let saving = $state(false);
+	// Phones barely show <datalist> suggestions, so species in use are chips:
+	// ones sharing the typed genus first, then A to Z.
+	let species = $derived(data.plant.species ?? '');
+	const genus = $derived(species.trim().split(' ')[0].toLowerCase());
+	const suggested = $derived(
+		data.species.toSorted(
+			(a, b) =>
+				Number(b.toLowerCase().startsWith(genus)) - Number(a.toLowerCase().startsWith(genus))
+		)
+	);
 </script>
 
 <svelte:head>
@@ -50,17 +60,21 @@
 		</label>
 		<label class="field">
 			<span>What it is <span class="muted">(optional)</span></span>
-			<input
-				name="species"
-				value={p.species ?? ''}
-				placeholder="e.g. Monstera"
-				list="species"
-				autocomplete="off"
-			/>
-			<datalist id="species">
-				{#each data.species as s (s)}<option value={s}></option>{/each}
-			</datalist>
+			<input name="species" bind:value={species} placeholder="e.g. Monstera" autocomplete="off" />
 		</label>
+		{#if suggested.length}
+			<div class="suggest" role="group" aria-label="Species in use">
+				{#each suggested as s (s)}
+					<button
+						type="button"
+						class="chip"
+						class:on={s === species.trim()}
+						aria-pressed={s === species.trim()}
+						onclick={() => (species = s)}>{s}</button
+					>
+				{/each}
+			</div>
+		{/if}
 		<label class="field">
 			<span>Notes <span class="muted">(optional)</span></span>
 			<textarea name="notes" placeholder="Likes a mist; keep out of direct sun"
@@ -72,6 +86,17 @@
 </main>
 
 <style>
+	.suggest {
+		display: flex;
+		gap: 8px;
+		overflow-x: auto;
+		margin: -8px -16px 0;
+		padding: 0 16px;
+		scrollbar-width: none;
+	}
+	.suggest .chip {
+		flex: none;
+	}
 	form {
 		display: flex;
 		flex-direction: column;

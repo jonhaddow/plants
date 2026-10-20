@@ -53,6 +53,10 @@ test('edits a plant and deletes it', async ({ page }) => {
 	await page.getByRole('link', { name: 'Edit' }).click();
 	await page.getByRole('textbox', { name: /^Name/ }).fill('Big aloe');
 	await page.getByLabel('Water every (days)').fill('10');
+	// Species in use are chips to tap, so plants of a kind match exactly.
+	await page.getByLabel('What it is').fill('chloro');
+	await page.getByRole('button', { name: 'Chlorophytum comosum' }).click();
+	await expect(page.getByLabel('What it is')).toHaveValue('Chlorophytum comosum');
 	await page.getByLabel('What it is').fill('Aloe vera');
 	await page.getByRole('button', { name: 'Save' }).click();
 
