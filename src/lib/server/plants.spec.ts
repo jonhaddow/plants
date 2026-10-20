@@ -150,6 +150,19 @@ describe('checks', () => {
 		expect(await history(db, id)).toEqual([]);
 	});
 
+	it('a watering put in late counts from its day, and history goes by day', async () => {
+		const id = await plant('Fern', await roomNamed(db, 'Living room'), 7, false);
+		await recordCheck(db, id, 'damp', alex, today);
+		await recordCheck(db, id, 'watered', alex, '2026-10-17');
+		// Still damp grew the interval to 9 days; the watering counts from the 17th.
+		expect(await getPlant(db, id)).toMatchObject({
+			intervalDays: 9,
+			dueOn: '2026-10-26',
+			lastWateredOn: '2026-10-17'
+		});
+		expect((await history(db, id)).map((c) => c.day)).toEqual([today, '2026-10-17']);
+	});
+
 	it('ignores a plant that has gone', async () => {
 		expect(await recordCheck(db, 999, 'watered', alex, today)).toBeNull();
 	});

@@ -3,12 +3,14 @@
 	import CheckButtons from '#lib/components/CheckButtons.svelte';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
-	import { relativeDay } from '#lib/dates.ts';
+	import { addDays, relativeDay } from '#lib/dates.ts';
+	import { enhance } from '$app/forms';
 	import { describeInterval } from '#lib/watering.ts';
 
 	let { data, form }: PageProps = $props();
 	const p = $derived(data.plant);
 	let deleting = $state(false);
+	let earlier = $state(false);
 </script>
 
 <svelte:head>
@@ -22,6 +24,8 @@
 	</div>
 
 	<div class="hero"><PlantPhoto photoKey={p.photoKey} size={480} /></div>
+
+	{#if form?.error}<p class="error" role="alert">{form.error}</p>{/if}
 
 	<header>
 		<h1>{p.name}</h1>
@@ -41,6 +45,36 @@
 		</p>
 		<CheckButtons id={p.id} name={p.name} />
 		<small class="muted">Dry before it’s due? Tap Watered anyway: it’ll come round sooner.</small>
+		{#if earlier}
+			<form
+				method="POST"
+				action="?/water"
+				class="earlier"
+				use:enhance={() =>
+					async ({ update, result }) => {
+						await update({ reset: false });
+						if (result.type === 'success') earlier = false;
+					}}
+			>
+				<input type="hidden" name="id" value={p.id} />
+				<label class="field">
+					<span>Watered on</span>
+					<input
+						type="date"
+						name="day"
+						value={addDays(data.today, -1)}
+						min={data.earliest}
+						max={data.today}
+						required
+					/>
+				</label>
+				<button class="btn">Save</button>
+			</form>
+		{:else}
+			<button class="link" type="button" onclick={() => (earlier = true)}
+				>Watered on a different day?</button
+			>
+		{/if}
 	</section>
 
 	{#if p.notes}
@@ -115,5 +149,32 @@
 	}
 	form .btn {
 		width: 100%;
+	}
+	.earlier {
+		display: flex;
+		align-items: end;
+		gap: 8px;
+	}
+	.earlier .field {
+		flex: 1;
+	}
+	.earlier .btn {
+		width: auto;
+		min-height: 44px;
+		padding: 0 20px;
+		background: var(--water);
+		border-color: var(--water);
+		color: var(--on-water);
+	}
+	.link {
+		align-self: start;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: var(--accent);
+		font: inherit;
+		font-weight: 700;
+		text-decoration: underline;
+		cursor: pointer;
 	}
 </style>

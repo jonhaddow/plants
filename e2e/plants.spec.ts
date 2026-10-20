@@ -69,3 +69,17 @@ test('edits a plant and deletes it', async ({ page }) => {
 	await expect(page.getByRole('heading', { name: 'Plants' })).toBeVisible();
 	await expect(page.getByRole('link', { name: /Big aloe/ })).toBeHidden();
 });
+
+test('puts in a watering from an earlier day', async ({ page }) => {
+	await open(page, '/plants');
+	await page.getByRole('link', { name: /Cactus/ }).click();
+	await page.getByRole('button', { name: 'Watered on a different day?' }).click();
+	await expect(page.getByLabel('Watered on')).toBeVisible();
+	await page.getByRole('button', { name: 'Save' }).click();
+	await expect(page.getByRole('status')).toContainText('Watered Cactus');
+	await expect(page.getByText(/last watered yesterday/)).toBeVisible();
+	await expect(page.getByRole('listitem').filter({ hasText: 'Yesterday' })).toBeVisible();
+	await page.getByRole('status').getByRole('button', { name: 'Undo' }).click();
+	await expect(page.getByText(/last watered 27 days ago|last watered/)).toBeVisible();
+	await expect(page.getByRole('listitem').filter({ hasText: 'Yesterday' })).toBeHidden();
+});

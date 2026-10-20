@@ -1,19 +1,27 @@
 import { fail } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit';
-import { today } from '../dates.ts';
+import { addDays, today } from '../dates.ts';
 import { stackName } from '../stacks.ts';
 import type { Check, Done } from '../watering.ts';
 import { getPlant, recordCheck, undoCheck } from './plants.ts';
 
 const ids = (form: FormData, name: string) => form.getAll(name).map(Number);
 
+/** How far back a watering can be put in, so a mistyped year can't. */
+export const BACKDATE_DAYS = 30;
+
 // One plant, or a stack of them (Today's grid stacks plants watered together).
+// A plant's page can give an earlier `day` for a watering nobody tapped.
 function record(kind: Check) {
 	return async ({ request, locals }: RequestEvent) => {
-		const day = today();
+		const form = await request.formData();
+		const now = today();
+		const day = String(form.get('day') ?? '') || now;
+		if (day > now || day < addDays(now, -BACKDATE_DAYS) || !/^\d{4}-\d{2}-\d{2}$/.test(day))
+			return fail(400, { error: 'Pick a day in the last month' });
 		const plants = [];
 		const checkIds = [];
-		for (const id of ids(await request.formData(), 'id')) {
+		for (const id of ids(form, 'id')) {
 			const p = await getPlant(locals.db, id);
 			if (!p) continue;
 			plants.push(p);
