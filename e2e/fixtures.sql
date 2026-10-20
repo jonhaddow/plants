@@ -13,3 +13,4 @@ INSERT INTO plant (room_id, name, interval_days, due_on, last_watered_on, create
 	(3, 'Aloe', 14, date('now', '+10 days'), date('now', '-4 days'), '2026-10-01T00:00:00.000Z', false);
 -- Two of a kind, stacked on Today.
 UPDATE plant SET species = 'Chlorophytum comosum' WHERE name LIKE 'Spider plant%';
+UPDATE plant SET species = 'Monstera deliciosa' WHERE name = 'Monstera';
