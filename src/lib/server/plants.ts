@@ -82,6 +82,16 @@ export function allPlants(db: DB) {
 		.orderBy(...byRoom, asc(plant.name));
 }
 
+/** Species already in use, A to Z, for the edit form to suggest. */
+export async function speciesInUse(db: DB) {
+	const rows = await db
+		.selectDistinct({ species: plant.species })
+		.from(plant)
+		.where(isNotNull(plant.species))
+		.orderBy(asc(plant.species));
+	return rows.map((r) => r.species!);
+}
+
 /** Rows grouped under their room, keeping their order. */
 export function groupByRoom<T extends { roomId: number; room: string }>(rows: T[]) {
 	const rooms: { id: number; name: string; plants: T[] }[] = [];

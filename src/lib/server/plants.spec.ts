@@ -10,6 +10,7 @@ import {
 	history,
 	recordCheck,
 	roomNamed,
+	speciesInUse,
 	todayPlants,
 	undoCheck,
 	upcomingPlants,
@@ -39,6 +40,23 @@ describe('rooms', () => {
 		const kitchen = await roomNamed(db, 'Kitchen');
 		const order = (await db.select().from(schema.room)).sort((a, b) => a.sortOrder - b.sortOrder);
 		expect(order.map((r) => r.id)).toEqual([living, kitchen]);
+	});
+});
+
+describe('species in use', () => {
+	it('lists each once, A to Z, skipping unknowns', async () => {
+		const room = await roomNamed(db, 'Lounge');
+		const add = (species: string | null) =>
+			addPlant(
+				db,
+				{ name: 'x', roomId: room, intervalDays: 7, species, notes: null, wateredToday: true },
+				today
+			);
+		await add('Pilea');
+		await add(null);
+		await add('Epipremnum');
+		await add('Pilea');
+		expect(await speciesInUse(db)).toEqual(['Epipremnum', 'Pilea']);
 	});
 });
 
