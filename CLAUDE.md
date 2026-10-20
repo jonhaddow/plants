@@ -12,6 +12,7 @@ Which house plants need water today, for a two-person household. A PWA at https:
 - `src/lib/server/reminders.ts`, `src/routes/remind`: the morning push, called by the cron (`worker/entry.js`) with `CRON_SECRET`
 - `src/lib/server/push.ts`, `src/service-worker/`: web push and the app icon badge (from budget)
 - `src/lib/dates.ts`: UK days
+- `src/lib/stacks.ts`: stacking the same species in a room (Today, the push)
 - `PlantTile.svelte`: a plant on Today's grid; `/plants/new` is the camera page
 - Routes: `/` Today, `/plants` (+ `/plants/new`, `/plants/[id]`, `/plants/[id]/edit`), `/settings`, `/notifications`
 - `.claude/skills/classify-plants`: naming new plants (the To set up list) from their photos, with species, interval and care note

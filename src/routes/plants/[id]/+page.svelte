@@ -73,7 +73,7 @@
 </main>
 
 {#if form?.done}
-	{#key form.done.checkId}<UndoBar done={form.done} />{/key}
+	{#key form.done.checkIds[0]}<UndoBar done={form.done} />{/key}
 {/if}
 
 <style>

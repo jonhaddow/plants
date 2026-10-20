@@ -5,7 +5,10 @@ import { addDays } from '../dates.ts';
 import { afterDamp, afterWatering, type Check } from '../watering.ts';
 
 /** A plant as lists show it. */
-export type PlantRow = Pick<Plant, 'id' | 'name' | 'photoKey' | 'dueOn' | 'intervalDays'> & {
+export type PlantRow = Pick<
+	Plant,
+	'id' | 'name' | 'species' | 'photoKey' | 'dueOn' | 'intervalDays'
+> & {
 	roomId: number;
 	room: string;
 };
@@ -13,6 +16,7 @@ export type PlantRow = Pick<Plant, 'id' | 'name' | 'photoKey' | 'dueOn' | 'inter
 const listColumns = {
 	id: plant.id,
 	name: plant.name,
+	species: plant.species,
 	photoKey: plant.photoKey,
 	dueOn: plant.dueOn,
 	intervalDays: plant.intervalDays,

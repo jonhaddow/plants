@@ -1,11 +1,14 @@
 import type { DB } from './db/index.ts';
 import { duePlants, groupByRoom, type PlantRow } from './plants.ts';
+import { stackName, stacks } from '../stacks.ts';
 import { notify, type PushConfig, type PushPayload } from './push.ts';
 
-/** "3 plants need water" / "Living room: Fern, Monstera · Kitchen: Basil". */
-export function dueNotice(due: Pick<PlantRow, 'name' | 'roomId' | 'room'>[]): PushPayload {
+/** "5 plants need water" / "Living room: Fern, Pothos ×3 · Kitchen: Basil". */
+export function dueNotice(
+	due: Pick<PlantRow, 'name' | 'species' | 'roomId' | 'room'>[]
+): PushPayload {
 	const body = groupByRoom(due)
-		.map((r) => `${r.name}: ${r.plants.map((p) => p.name).join(', ')}`)
+		.map((r) => `${r.name}: ${stacks(r.plants).map(stackName).join(', ')}`)
 		.join(' · ');
 	return {
 		title: due.length === 1 ? `${due[0].name} needs water` : `${due.length} plants need water`,

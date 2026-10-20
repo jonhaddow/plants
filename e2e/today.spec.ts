@@ -3,7 +3,7 @@ import { open } from './helpers.ts';
 
 test('shows what needs water as photo tiles, filtered by room', async ({ page }) => {
 	await open(page, '/');
-	await expect(page.getByText('3 plants need water')).toBeVisible();
+	await expect(page.getByText('5 plants need water')).toBeVisible();
 	await expect(page.getByText('2d late')).toBeVisible();
 	await expect(page.getByRole('heading', { name: 'Coming up' })).toBeVisible();
 	// Coming up is a row per day; open one to see its plants.
@@ -24,11 +24,11 @@ test('tapping a tile waters it, and tapping again undoes it', async ({ page }) =
 	await open(page, '/');
 	await page.getByRole('button', { name: 'Watered Fern' }).click();
 	await expect(page.getByRole('status')).toContainText('Watered Fern');
-	await expect(page.getByText('2 plants need water')).toBeVisible();
+	await expect(page.getByText('4 plants need water')).toBeVisible();
 
 	await page.getByRole('button', { name: 'Undo watering Fern' }).click();
 	await expect(page.getByRole('button', { name: 'Watered Fern' })).toBeVisible();
-	await expect(page.getByText('3 plants need water')).toBeVisible();
+	await expect(page.getByText('5 plants need water')).toBeVisible();
 });
 
 test('still damp puts it off for a few days, and Undo puts it back', async ({ page }) => {
@@ -38,4 +38,20 @@ test('still damp puts it off for a few days, and Undo puts it back', async ({ pa
 	await expect(page.getByRole('button', { name: 'Undo Basil still damp' })).toBeVisible();
 	await page.getByRole('status').getByRole('button', { name: 'Undo' }).click();
 	await expect(page.getByRole('button', { name: 'Basil is still damp' })).toBeVisible();
+});
+
+test('the same kind in the same room is one tile, watered together', async ({ page }) => {
+	await open(page, '/');
+	await page.getByRole('button', { name: 'Watered Spider plant ×2' }).click();
+	await expect(page.getByRole('status')).toContainText('Watered Spider plant ×2');
+	await expect(page.getByText('3 plants need water')).toBeVisible();
+	await page.getByRole('status').getByRole('button', { name: 'Undo' }).click();
+	await expect(page.getByText('5 plants need water')).toBeVisible();
+
+	// ×2 splits it, to say one is still damp.
+	await page.getByRole('button', { name: 'Show the 2 separately' }).click();
+	await page.getByRole('button', { name: 'Spider plant (small) is still damp' }).click();
+	await expect(page.getByRole('button', { name: 'Watered Spider plant (big)' })).toBeVisible();
+	await page.getByRole('status').getByRole('button', { name: 'Undo' }).click();
+	await expect(page.getByText('5 plants need water')).toBeVisible();
 });

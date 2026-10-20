@@ -4,6 +4,8 @@
 	import PlantTile from '#lib/components/PlantTile.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
 	import { daysBetween, formatDay } from '#lib/dates.ts';
+	import { stacks } from '#lib/stacks.ts';
+	import { SvelteSet } from 'svelte/reactivity';
 
 	let { data, form }: PageProps = $props();
 
@@ -12,6 +14,14 @@
 	let roomId = $state<number | null>(null);
 	const shown = $derived(
 		roomId === null ? data.plants : data.plants.filter((p) => p.roomId === roomId)
+	);
+	// Same species, same room, same state today: one tile, unless its ×n was tapped.
+	const split = new SvelteSet<string>();
+	const kind = (p: (typeof data.plants)[number]) => `${p.roomId}|${p.species}`;
+	const tiles = $derived(
+		stacks(shown, (p) => p.checked ?? '').flatMap((s) =>
+			s.length > 1 && split.has(kind(s[0])) ? s.map((p) => [p]) : [s]
+		)
 	);
 	// Coming up, a row per day (already soonest first); tap one to see its plants.
 	const days = $derived.by(() => {
@@ -82,8 +92,8 @@
 
 	{#if data.plants.length}
 		<div class="grid">
-			{#each shown as p (p.id)}
-				<PlantTile plant={p} today={data.today} />
+			{#each tiles as s (s[0].id)}
+				<PlantTile plants={s} today={data.today} onsplit={() => split.add(kind(s[0]))} />
 			{/each}
 		</div>
 		{#if data.plants.some((p) => p.checked)}
@@ -124,7 +134,7 @@
 </main>
 
 {#if form?.done}
-	{#key form.done.checkId}<UndoBar done={form.done} />{/key}
+	{#key form.done.checkIds[0]}<UndoBar done={form.done} />{/key}
 {/if}
 
 <style>
