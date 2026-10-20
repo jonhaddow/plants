@@ -20,7 +20,7 @@ npm run dev    # the login page has dev-only "Sign in as" buttons
 
 ## Sign-in
 
-Google OAuth, sharing budget's client. Only emails in the `user` table can sign in: `wrangler d1 execute plants --remote --command "INSERT INTO user (email, name) VALUES ('you@example.com', 'You')"`.
+Google OAuth, sharing budget's client, through the shared redirect `https://auth.app.haddow.me/callback` (`~/code/auth`), so the app's own address isn't registered with Google. Only emails in the `user` table can sign in: `wrangler d1 execute plants --remote --command "INSERT INTO user (email, name) VALUES ('you@example.com', 'You')"`.
 
 ## Your data
 
