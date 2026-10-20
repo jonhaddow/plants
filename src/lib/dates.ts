@@ -16,6 +16,9 @@ const time = (day: string) => Date.parse(`${day}T00:00:00Z`);
 /** Today's UK date, YYYY-MM-DD. */
 export const today = (now = new Date()) => ukDay.format(now);
 
+/** How far back a watering can be put in late (so a mistyped year can't). */
+export const BACKDATE_DAYS = 30;
+
 /** YYYY-MM-DD, a number of days on (or back). */
 export const addDays = (day: string, by: number) =>
 	new Date(time(day) + by * DAY).toISOString().slice(0, 10);

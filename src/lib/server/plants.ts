@@ -222,7 +222,13 @@ export async function recordCheck(
 		dueOn: p.dueOn,
 		lastWateredOn: p.lastWateredOn
 	};
-	const after = kind === 'watered' ? afterWatering(before, today) : afterDamp(before, today);
+	// A watering put in late, from before the last one, is history only.
+	const stale = kind === 'watered' && p.lastWateredOn !== null && today < p.lastWateredOn;
+	const after = stale
+		? before
+		: kind === 'watered'
+			? afterWatering(before, today)
+			: afterDamp(before, today);
 	const [, [made]] = await db.batch([
 		db.update(plant).set(after).where(eq(plant.id, plantId)),
 		db
@@ -254,13 +260,13 @@ export async function undoCheck(db: DB, checkId: number) {
 	return c.plantId;
 }
 
-/** A plant's recent checks, newest first, with who did them. */
+/** A plant's recent checks, latest day first (a watering can be put in late), with who did them. */
 export function history(db: DB, plantId: number, limit = 10) {
 	return db
 		.select({ id: check.id, kind: check.kind, day: check.day, who: user.name })
 		.from(check)
 		.leftJoin(user, eq(check.userId, user.id))
 		.where(eq(check.plantId, plantId))
-		.orderBy(desc(check.at), desc(check.id))
+		.orderBy(desc(check.day), desc(check.at), desc(check.id))
 		.limit(limit);
 }
