@@ -222,7 +222,13 @@ export async function recordCheck(
 		dueOn: p.dueOn,
 		lastWateredOn: p.lastWateredOn
 	};
-	const after = kind === 'watered' ? afterWatering(before, today) : afterDamp(before, today);
+	// A watering put in late, from before the last one, is history only.
+	const stale = kind === 'watered' && p.lastWateredOn !== null && today < p.lastWateredOn;
+	const after = stale
+		? before
+		: kind === 'watered'
+			? afterWatering(before, today)
+			: afterDamp(before, today);
 	const [, [made]] = await db.batch([
 		db.update(plant).set(after).where(eq(plant.id, plantId)),
 		db

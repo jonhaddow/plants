@@ -3,14 +3,12 @@
 	import CheckButtons from '#lib/components/CheckButtons.svelte';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import UndoBar from '#lib/components/UndoBar.svelte';
-	import { addDays, relativeDay } from '#lib/dates.ts';
-	import { enhance } from '$app/forms';
+	import { addDays, BACKDATE_DAYS, relativeDay } from '#lib/dates.ts';
 	import { describeInterval } from '#lib/watering.ts';
 
 	let { data, form }: PageProps = $props();
 	const p = $derived(data.plant);
 	let deleting = $state(false);
-	let earlier = $state(false);
 </script>
 
 <svelte:head>
@@ -45,17 +43,9 @@
 		</p>
 		<CheckButtons id={p.id} name={p.name} />
 		<small class="muted">Dry before it’s due? Tap Watered anyway: it’ll come round sooner.</small>
-		{#if earlier}
-			<form
-				method="POST"
-				action="?/water"
-				class="earlier"
-				use:enhance={() =>
-					async ({ update, result }) => {
-						await update({ reset: false });
-						if (result.type === 'success') earlier = false;
-					}}
-			>
+		<details>
+			<summary>Watered on a different day?</summary>
+			<form method="POST" action="?/water" class="earlier">
 				<input type="hidden" name="id" value={p.id} />
 				<label class="field">
 					<span>Watered on</span>
@@ -63,18 +53,14 @@
 						type="date"
 						name="day"
 						value={addDays(data.today, -1)}
-						min={data.earliest}
+						min={addDays(data.today, -BACKDATE_DAYS)}
 						max={data.today}
 						required
 					/>
 				</label>
 				<button class="btn">Save</button>
 			</form>
-		{:else}
-			<button class="link" type="button" onclick={() => (earlier = true)}
-				>Watered on a different day?</button
-			>
-		{/if}
+		</details>
 	</section>
 
 	{#if p.notes}
@@ -151,6 +137,7 @@
 		width: 100%;
 	}
 	.earlier {
+		margin-top: 12px;
 		display: flex;
 		align-items: end;
 		gap: 8px;
@@ -166,15 +153,9 @@
 		border-color: var(--water);
 		color: var(--on-water);
 	}
-	.link {
-		align-self: start;
-		padding: 0;
-		border: 0;
-		background: none;
+	summary {
 		color: var(--accent);
-		font: inherit;
 		font-weight: 700;
-		text-decoration: underline;
 		cursor: pointer;
 	}
 </style>

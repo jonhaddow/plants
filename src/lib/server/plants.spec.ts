@@ -163,6 +163,15 @@ describe('checks', () => {
 		expect((await history(db, id)).map((c) => c.day)).toEqual([today, '2026-10-17']);
 	});
 
+	it('a late watering from before the last one leaves the schedule alone', async () => {
+		const id = await plant('Fern', await roomNamed(db, 'Living room'), 7, false);
+		await recordCheck(db, id, 'watered', alex, today);
+		const before = await getPlant(db, id);
+		await recordCheck(db, id, 'watered', alex, '2026-10-17');
+		expect(await getPlant(db, id)).toEqual(before);
+		expect(await history(db, id)).toHaveLength(2);
+	});
+
 	it('ignores a plant that has gone', async () => {
 		expect(await recordCheck(db, 999, 'watered', alex, today)).toBeNull();
 	});
