@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
+	import { Switch } from '#lib/components/ui/switch/index.ts';
 	import type { PageProps } from './$types';
 	import { deserialize } from '$app/forms';
 	import { invalidateAll } from '$app/navigation';
@@ -238,10 +240,10 @@
 				<small>Not sure? Weekly. It learns from what you tap.</small>
 			</fieldset>
 			<label class="tick">
-				<input type="checkbox" name="wateredToday" checked />
+				<Switch name="wateredToday" checked />
 				Watered today
 			</label>
-			<button type="button" class="btn primary" onclick={() => (details = false)}>Done</button>
+			<Button type="button" onclick={() => (details = false)}>Done</Button>
 		</div>
 	</form>
 
@@ -454,11 +456,6 @@
 		gap: 10px;
 		min-height: 44px;
 		font-weight: 600;
-	}
-	.tick input {
-		width: 22px;
-		height: 22px;
-		accent-color: #6cc98f;
 	}
 	.toast {
 		position: fixed;

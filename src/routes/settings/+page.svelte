@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	let { data }: PageProps = $props();
 </script>
@@ -27,7 +28,7 @@
 	</section>
 
 	<form method="POST" action="/logout">
-		<button class="btn danger">Sign out ({data.user?.name})</button>
+		<Button variant="destructive" class="w-full">Sign out ({data.user?.name})</Button>
 	</form>
 </main>
 
@@ -59,8 +60,5 @@
 	.people .muted {
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-	form .btn {
-		width: 100%;
 	}
 </style>

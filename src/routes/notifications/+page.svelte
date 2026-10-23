@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	import { onMount } from 'svelte';
 
@@ -139,14 +140,14 @@
 				Notifications.
 			</p>
 		{:else if status === 'off'}
-			<button class="btn primary" onclick={turnOn} disabled={busy}>
+			<Button class="w-full" onclick={turnOn} disabled={busy}>
 				{busy ? 'Turning on…' : 'Turn on notifications'}
-			</button>
+			</Button>
 		{:else}
 			<p><strong>On</strong> for this device.</p>
 			<div class="row">
-				<button class="btn" onclick={test} disabled={busy}>Send a test</button>
-				<button class="btn quiet" onclick={turnOff} disabled={busy}>Turn off</button>
+				<Button variant="outline" onclick={test} disabled={busy}>Send a test</Button>
+				<Button variant="secondary" onclick={turnOff} disabled={busy}>Turn off</Button>
 			</div>
 		{/if}
 	</section>
@@ -158,9 +159,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
-	}
-	.block > .btn {
-		width: 100%;
 	}
 	.row {
 		display: grid;

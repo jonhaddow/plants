@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import { describeInterval } from '#lib/watering.ts';
@@ -13,7 +14,7 @@
 <main class="page">
 	<header>
 		<h1>Plants</h1>
-		<a class="btn primary" href="/plants/new">Add plant</a>
+		<Button class="min-h-11" href="/plants/new">Add plant</Button>
 	</header>
 
 	{#if !data.rooms.length && !data.toSetUp.length}
@@ -58,9 +59,6 @@
 		align-items: center;
 		justify-content: space-between;
 	}
-	header .btn {
-		min-height: 44px;
-	}
 	section {
 		display: flex;
 		flex-direction: column;
@@ -79,6 +77,11 @@
 		flex-direction: column;
 		gap: 4px;
 		text-decoration: none;
+		transition: scale 0.1s ease-out;
+	}
+	/* Pressed: the plant shrinks a little. */
+	.grid a:active {
+		scale: 0.96;
 	}
 	.grid a :global(img),
 	.grid a :global(.none) {

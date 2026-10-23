@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
 	import PlantTile from '#lib/components/PlantTile.svelte';
@@ -61,7 +62,7 @@
 				Walk round with your phone: one photo per plant and which room it’s in. That’s it. Each
 				plant learns how often it needs water from what you tap.
 			</p>
-			<a class="btn primary" href="/plants/new">Add the first plant</a>
+			<Button href="/plants/new">Add the first plant</Button>
 		</section>
 	{:else if !data.plants.length}
 		<section class="card all-done">
@@ -232,6 +233,11 @@
 		flex-direction: column;
 		gap: 4px;
 		text-decoration: none;
+		transition: scale 0.1s ease-out;
+	}
+	/* Pressed: the plant shrinks a little. */
+	.soon a:active {
+		scale: 0.96;
 	}
 	.soon :global(img),
 	.soon :global(.none) {
