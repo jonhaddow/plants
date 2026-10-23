@@ -110,6 +110,7 @@
 <style>
 	/* A floating, frosted pill; the page scrolls under it. */
 	nav {
+		view-transition-name: tabs;
 		position: fixed;
 		left: 50%;
 		bottom: calc(12px + env(safe-area-inset-bottom));

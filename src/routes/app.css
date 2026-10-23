@@ -15,20 +15,11 @@
 	--color-primary-foreground: var(--on-accent);
 	--color-secondary: var(--line);
 	--color-secondary-foreground: var(--ink);
-	--color-muted: var(--line);
-	--color-muted-foreground: var(--muted);
-	--color-accent: var(--line);
-	--color-accent-foreground: var(--ink);
-	--color-popover: var(--card);
-	--color-popover-foreground: var(--ink);
 	--color-destructive: var(--over);
-	--color-border: var(--ink);
 	--color-input: var(--field);
 	--color-ring: var(--ink);
 	--color-water: var(--water);
 	--color-water-foreground: var(--on-water);
-	--radius-lg: var(--radius);
-	--font-sans: 'Nunito Variable', system-ui, sans-serif;
 }
 
 @layer base {
