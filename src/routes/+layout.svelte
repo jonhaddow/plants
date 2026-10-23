@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LayoutProps } from './$types';
 	import { browser } from '$app/env';
-	import { beforeNavigate } from '$app/navigation';
+	import { beforeNavigate, onNavigate } from '$app/navigation';
 	import { page, updated } from '$app/state';
 	// Served with the app (not Google Fonts): no extra connections before text shows.
 	import '@fontsource-variable/nunito';
@@ -42,6 +42,17 @@
 		};
 		const count = data.due;
 		(count > 0 ? nav.setAppBadge?.(count) : nav.clearAppBadge?.())?.catch(() => {});
+	});
+
+	// Pages crossfade into each other (app.css), where the browser can. The tabs stay put.
+	onNavigate((navigation) => {
+		if (!document.startViewTransition || navigation.to?.url.pathname === page.url.pathname) return;
+		return new Promise((resolve) => {
+			document.startViewTransition(async () => {
+				resolve();
+				await navigation.complete;
+			});
+		});
 	});
 </script>
 
@@ -137,6 +148,11 @@
 	.icon svg {
 		width: 24px;
 		height: 24px;
+		transition: scale 0.1s ease-out;
+	}
+	/* Pressed: the icon shrinks a little. */
+	nav a:active .icon svg {
+		scale: 0.85;
 	}
 	nav a.active {
 		color: var(--accent);

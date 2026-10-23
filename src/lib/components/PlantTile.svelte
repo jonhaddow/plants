@@ -107,6 +107,21 @@
 		user-select: none;
 		-webkit-user-select: none;
 	}
+	/* Pressed: the tile sinks a little, and its small buttons shrink. */
+	.tile {
+		transition: scale 0.12s ease-out;
+	}
+	.tile:has(.main:active) {
+		scale: 0.97;
+	}
+	.damp,
+	.count {
+		transition: scale 0.1s ease-out;
+	}
+	.damp:active,
+	.count:active {
+		scale: 0.9;
+	}
 	img,
 	.none {
 		position: absolute;

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	import CheckButtons from '#lib/components/CheckButtons.svelte';
 	import PlantPhoto from '#lib/components/PlantPhoto.svelte';
@@ -58,7 +59,7 @@
 						required
 					/>
 				</label>
-				<button class="btn">Save</button>
+				<Button variant="water" size="sm" class="px-5">Save</Button>
 			</form>
 		</details>
 	</section>
@@ -83,10 +84,10 @@
 
 	<form method="POST" action="?/delete">
 		{#if deleting}
-			<button class="btn danger">Yes, delete {p.name}</button>
+			<Button variant="destructive" class="w-full">Yes, delete {p.name}</Button>
 		{:else}
-			<button class="btn danger" type="button" onclick={() => (deleting = true)}
-				>Delete plant</button
+			<Button variant="destructive" class="w-full" type="button" onclick={() => (deleting = true)}
+				>Delete plant</Button
 			>
 		{/if}
 	</form>
@@ -133,9 +134,6 @@
 		justify-content: space-between;
 		padding: 12px 16px;
 	}
-	form .btn {
-		width: 100%;
-	}
 	.earlier {
 		margin-top: 12px;
 		display: flex;
@@ -144,14 +142,6 @@
 	}
 	.earlier .field {
 		flex: 1;
-	}
-	.earlier .btn {
-		width: auto;
-		min-height: 44px;
-		padding: 0 20px;
-		background: var(--water);
-		border-color: var(--water);
-		color: var(--on-water);
 	}
 	summary {
 		color: var(--accent);

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { Button } from '#lib/components/ui/button/index.ts';
 	import type { PageProps } from './$types';
 	import { enhance } from '$app/forms';
 	import PhotoInput from '#lib/components/PhotoInput.svelte';
@@ -81,7 +82,7 @@
 				>{p.notes ?? ''}</textarea
 			>
 		</label>
-		<button class="btn primary" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
+		<Button disabled={saving}>{saving ? 'Saving…' : 'Save'}</Button>
 	</form>
 </main>
 
