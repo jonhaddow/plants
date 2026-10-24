@@ -2,8 +2,6 @@
 
 Which house plants need water today, for a two-person household. A PWA at https://plants.app.haddow.me. Each plant has a photo, a room and a watering interval that learns from the two buttons, Watered and Still damp. A push each morning lists what's due.
 
-Stack, workflow, commands and shared gotchas: the `app-stack` skill.
-
 ## Worth knowing
 
 - `watering.ts` is the interval learning (Watered, Still damp): pure and unit tested, keep it that way.
