@@ -43,16 +43,16 @@
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^4.1.0",
 		"shadcn-svelte": "^1.7.0",
-		"svelte": "^5.56.7",
+		"svelte": "^5.57.3",
 		"svelte-check": "^4.6.0",
 		"tailwind-merge": "^3.7.0",
 		"tailwind-variants": "^3.3.1",
 		"tailwindcss": "^4.3.3",
 		"typescript": "^6.0.3",
-		"typescript-eslint": "^8.72.0",
+		"typescript-eslint": "^8.72.1",
 		"vite": "^8.3.5",
 		"vitest": "^5.0.3",
-		"wrangler": "^4.151.3"
+		"wrangler": "^4.153.0"
 	},
 	"imports": {
 		"#lib": "./src/lib/index.js",
