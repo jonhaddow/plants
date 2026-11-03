@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { LayoutProps } from './$types';
 	import { browser } from '$app/env';
-	import { beforeNavigate, onNavigate } from '$app/navigation';
+	import { beforeNavigate, invalidateAll, onNavigate } from '$app/navigation';
 	import { page, updated } from '$app/state';
 	// Served with the app (not Google Fonts): no extra connections before text shows.
 	import '@fontsource-variable/nunito';
@@ -28,9 +28,12 @@
 	});
 
 	// Coming back to the app from the background: if a new version was deployed
-	// meanwhile, load it straight away.
-	async function reloadIfUpdated() {
-		if (document.visibilityState === 'visible' && (await updated.check())) location.reload();
+	// meanwhile, load it straight away; otherwise reload the page's data, so it isn't
+	// left showing what it had when the app was last open.
+	async function onVisible() {
+		if (document.visibilityState !== 'visible') return;
+		if (await updated.check()) location.reload();
+		else if (data.user) void invalidateAll();
 	}
 
 	// Keep the home-screen icon's badge equal to how many plants need water.
@@ -60,7 +63,7 @@
 	<link rel="preload" href={font} as="font" type="font/woff2" crossorigin="anonymous" />
 </svelte:head>
 
-<svelte:document onvisibilitychange={reloadIfUpdated} />
+<svelte:document onvisibilitychange={onVisible} />
 
 {@render children()}
 
