@@ -8,7 +8,7 @@ Each plant has a photo, a room and a watering interval. The interval learns from
 
 - [SvelteKit](https://svelte.dev) (Svelte 5) and TypeScript, as an installable PWA
 - [Cloudflare Workers](https://workers.cloudflare.com), with [D1](https://developers.cloudflare.com/d1/) (SQLite) through [Drizzle ORM](https://orm.drizzle.team), photos included
-- Google sign-in ([Arctic](https://arcticjs.dev)) for an allowlist of users
+- Google sign-in (OAuth with PKCE, shared code in [`auth`](https://github.com/jonhaddow/auth)) for an allowlist of users
 - [Tailwind CSS](https://tailwindcss.com) and [shadcn-svelte](https://shadcn-svelte.com)
 - Web push notifications from a daily cron trigger
 - [Vitest](https://vitest.dev) and [Playwright](https://playwright.dev) for tests
