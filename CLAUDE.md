@@ -7,6 +7,7 @@ Which house plants need water today, for a two-person household. A PWA at https:
 - `watering.ts` is the interval learning (Watered, Still damp): pure and unit tested, keep it that way.
 - Photos are base64 in D1's `photo` table, shrunk on the phone before upload, and served to signed-in people only.
 - The `classify-plants` skill (`.claude/skills/`) names new plants from their photos.
+- Secrets: `GOOGLE_CLIENT_SECRET`, `CRON_SECRET` (authenticates the morning cron), `VAPID_PRIVATE_KEY`.
 
 ## Review focus
 
