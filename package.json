@@ -68,7 +68,7 @@
 	"dependencies": {
 		"@block65/webcrypto-web-push": "^2.0.0",
 		"@fontsource-variable/nunito": "^5.2.0",
-		"arctic": "^3.7.0"
+		"auth": "github:jonhaddow/auth"
 	},
 	"overrides": {
 		"runed": {
