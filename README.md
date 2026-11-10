@@ -14,6 +14,14 @@ Each plant has a photo, a room and a watering interval. The interval learns from
 - [Vitest](https://vitest.dev) and [Playwright](https://playwright.dev) for tests
 - Deployed from `main` by Cloudflare Workers Builds
 
-## Development
+## Running locally
 
-See [`docs/development.md`](docs/development.md) for running it locally, configuration and deploying.
+```sh
+npm install
+npm run db:migrate:local
+npx wrangler d1 execute plants --local --command "INSERT INTO user (email, name) VALUES ('you@example.com', 'You')"
+cp .dev.vars.example .dev.vars
+npm run dev    # the login page has dev-only "Sign in as" buttons
+```
+
+Tests: `npm test` (unit), `npm run test:e2e` (Playwright), `npm run check` (types), `npm run lint`.
