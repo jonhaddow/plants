@@ -71,8 +71,10 @@
 						class="chip"
 						class:on={s === species.trim()}
 						aria-pressed={s === species.trim()}
-						onclick={() => (species = s)}>{s}</button
+						onclick={() => (species = s)}
 					>
+						{s}
+					</button>
 				{/each}
 			</div>
 		{/if}

@@ -15,11 +15,12 @@
 			update({ reset: false })}
 >
 	<input type="hidden" name="id" value={id} />
-	<Button variant="water" size="sm" formaction="?/water" aria-label="Watered {name}">Watered</Button
-	>
-	<Button variant="secondary" size="sm" formaction="?/damp" aria-label="{name} is still damp"
-		>Still damp</Button
-	>
+	<Button variant="water" size="sm" formaction="?/water" aria-label="Watered {name}">
+		Watered
+	</Button>
+	<Button variant="secondary" size="sm" formaction="?/damp" aria-label="{name} is still damp">
+		Still damp
+	</Button>
 </form>
 
 <style>

@@ -86,9 +86,9 @@
 		{#if deleting}
 			<Button variant="destructive" class="w-full">Yes, delete {p.name}</Button>
 		{:else}
-			<Button variant="destructive" class="w-full" type="button" onclick={() => (deleting = true)}
-				>Delete plant</Button
-			>
+			<Button variant="destructive" class="w-full" type="button" onclick={() => (deleting = true)}>
+				Delete plant
+			</Button>
 		{/if}
 	</form>
 </main>

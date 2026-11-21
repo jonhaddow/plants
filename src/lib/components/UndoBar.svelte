@@ -7,9 +7,9 @@
 </script>
 
 <form class="undo" method="POST" action="?/undo" use:enhance role="status">
-	<span
-		>{done.kind === 'watered' ? `Watered ${done.name}` : `${done.name}: looking again soon`}</span
-	>
+	<span>
+		{done.kind === 'watered' ? `Watered ${done.name}` : `${done.name}: looking again soon`}
+	</span>
 	{#each done.checkIds as id (id)}<input type="hidden" name="checkId" value={id} />{/each}
 	<button>Undo</button>
 </form>
