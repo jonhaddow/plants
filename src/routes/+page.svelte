@@ -77,15 +77,19 @@
 				class="chip"
 				class:on={roomId === null}
 				aria-pressed={roomId === null}
-				onclick={() => (roomId = null)}>All</button
+				onclick={() => (roomId = null)}
 			>
+				All
+			</button>
 			{#each rooms as [id, name] (id)}
 				<button
 					class="chip"
 					class:on={roomId === id}
 					aria-pressed={roomId === id}
-					onclick={() => (roomId = id)}>{name}</button
+					onclick={() => (roomId = id)}
 				>
+					{name}
+				</button>
 			{/each}
 		</div>
 	{/if}

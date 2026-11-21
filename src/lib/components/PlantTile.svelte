@@ -91,8 +91,10 @@
 			type="button"
 			class="count"
 			onclick={onsplit}
-			aria-label="Show the {plants.length} separately">×{plants.length}</button
+			aria-label="Show the {plants.length} separately"
 		>
+			×{plants.length}
+		</button>
 	{/if}
 </form>
 
